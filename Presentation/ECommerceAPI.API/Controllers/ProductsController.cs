@@ -61,9 +61,9 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody]UpdateProductCommandRequest request) //sent updateRequest with body from client
+        public async Task<IActionResult> Put([FromBody]UpdateProductCommandRequest updateProductCommandRequest) //sent updateRequest with body from client
         {
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(updateProductCommandRequest);
             return Ok(response);
         }
         [HttpDelete("{Id}")]
