@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerceAPI.Domain.Entities
+namespace ECommerceAPI.Domain.Entities.FileEntities
 {
     public class ProductImageFile : BaseFile //--> eklenen ürün fotoğrafının entity karşılığı
     {

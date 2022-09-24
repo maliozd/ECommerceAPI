@@ -19,24 +19,10 @@ namespace ECommerceAPI.API.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly IProductWriteRepository _productWriteRepository;
-        private readonly IProductReadRepository _productReadRepository;
-        IWebHostEnvironment _webHostEnvironment;
-        readonly IFileWriteRepository _fileWriteRepository;
-        readonly IStorageService _storageService;
-        readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
-        readonly IConfiguration configuration;
 
         readonly IMediator _mediator;
-        public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IWebHostEnvironment webHostEnvironment, IFileWriteRepository fileWriteRepository, IStorageService storageService, IProductImageFileWriteRepository productImageFileWriteRepository, IConfiguration config, IMediator mediator)
-        {
-            configuration = config;
-            _productReadRepository = productReadRepository;
-            _productWriteRepository = productWriteRepository;
-            _webHostEnvironment = webHostEnvironment;
-            _fileWriteRepository = fileWriteRepository;
-            _storageService = storageService;
-            _productImageFileWriteRepository = productImageFileWriteRepository;
+        public ProductsController(IMediator mediator)
+        {           
             _mediator = mediator;
         }
         [HttpGet]
@@ -81,17 +67,17 @@ namespace ECommerceAPI.API.Controllers
             return Ok();
         }
 
-        [HttpGet("[action]/{id}")] //alınacak parametre burdaki gibi routeda belirtilmiyorsa, parametre query stringten gelecektir.
-        public async Task<IActionResult> GetProductImages(int id)
-        {
-            Product? product = await _productReadRepository.Table.Include(p => p.ProductImageFiles).FirstOrDefaultAsync(p => p.Id == id);
-            return Ok(product.ProductImageFiles.Select(p => new
-            {
-                Path = $"{configuration["BaseStorageUrl"]}/{p.Path}",
-                p.FileName,
-                p.Id
-            }));
-        }
+        //[HttpGet("[action]/{Id}")] //alınacak parametre burdaki gibi routeda belirtilmiyorsa, parametre query stringten gelecektir.
+        //public async Task<IActionResult> GetProductImages(int id)
+        //{
+        //    //Product? product = await _productReadRepository.Table.Include(p => p.ProductImageFiles).FirstOrDefaultAsync(p => p.Id == id);
+        //    //return Ok(product.ProductImageFiles.Select(p => new
+        //    //{
+        //    //    Path = $"{configuration["BaseStorageUrl"]}/{p.Path}",
+        //    //    p.FileName,
+        //    //    p.Id
+        //    //}));
+        //}
         [HttpDelete("[action]/{Id}")] //imageId queryStringden, productId routedan gelecek.
         public async Task<IActionResult> DeleteProductImage([FromRoute]DeleteProductImageCommandRequest deleteProductImageCommandRequest,[FromQuery] int imageId)
         {

@@ -19,7 +19,7 @@ builder.Services.AddApplicationServices();
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod()));
 
-builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>()).  //oluþturduðumuz validation filterý uygulamaya ekledik.
+builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>()). 
     AddFluentValidation(configurationExpression => configurationExpression.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>()).ConfigureApiBehaviorOptions(options =>options.SuppressModelStateInvalidFilter = true);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
