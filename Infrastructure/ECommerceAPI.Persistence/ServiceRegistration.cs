@@ -2,6 +2,7 @@
 using ECommerceAPI.Application.Repositories.CustomerRepository;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepository;
 using ECommerceAPI.Application.Repositories.ProductImageFileRepository;
+using ECommerceAPI.Domain.Entities.Identity;
 using ECommerceAPI.Persistence.Contexts;
 using ECommerceAPI.Persistence.Repositories.Concrete;
 using ECommerceAPI.Persistence.Repositories.Concrete.ProductRepository;
@@ -15,6 +16,16 @@ namespace ECommerceAPI.Persistence
         public static void AddPersistenceServices(this IServiceCollection services)
         {
             services.AddDbContext<APIDbContext>(options => options.UseSqlServer(Configuration.connectionString));
+            services.AddIdentity<AppUser, AppRole>(options =>
+            {
+                options.Password.RequiredLength = 3;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+            }).AddEntityFrameworkStores<APIDbContext>();
+
+
             //------------------------------------------------------------------------------------------//***
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
             //AddScoped() --> her request için tek tek nesne gönderir. kullanıldıktan sonra nesneyi dispose eder. Task olmayan fonksiyonlarda await olmadığı için ve işlemden sonra kendini dispose ettiği için patlatır.

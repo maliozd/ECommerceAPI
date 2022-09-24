@@ -3,6 +3,7 @@ using ECommerceAPI.Infrastructure.Enums;
 using ECommerceAPI.Infrastructure.Services;
 using ECommerceAPI.Infrastructure.Services.Storage;
 using ECommerceAPI.Infrastructure.Services.Storage.Azure;
+using ECommerceAPI.Infrastructure.Services.Storage.Local;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
