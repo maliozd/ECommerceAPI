@@ -1,7 +1,4 @@
-Domain ve application katmanlarý core klasörü içerisinde oluþturulur. Çekirdek katmanlar olduðu için standart/gelenek haline gelmiþtir.
-
-Servielsieri oluþturduðumuz katmanlarýmýz olan inftastructure ve persistence katmanlarý da infrastructure klasörü içerisinde tanýmlanýr.
-Presentation uygulamalarý ise presentation klasörü içerisinde tanýmlanýr. Presantation uygulamalarý console, web app , web api vs olabilir.
-
 NAMESPACE
-InvoiceFile,ProductImageFile entities namespaceine çekildi. Persistence bütün concrete , base Write-Read hariç, Persistence.Repositories.Concrete ' e çekildi.
+InvoiceFile,ProductImageFile entities namespaceine Ã§ekildi. Persistence bÃ¼tÃ¼n concrete , base Write-Read hariÃ§, Persistence.Repositories.Concrete ' e Ã§ekildi.
+
+09/24 last
