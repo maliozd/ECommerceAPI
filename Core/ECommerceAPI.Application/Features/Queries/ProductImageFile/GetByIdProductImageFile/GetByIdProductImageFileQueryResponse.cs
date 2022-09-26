@@ -8,6 +8,9 @@ namespace ECommerceAPI.Application.Features.Queries.ProductImageFile.GetByIdProd
 {
     public class GetByIdProductImageFileQueryResponse
     {
-        public IEnumerable<ECommerceAPI.Domain.Entities.FileEntities.ProductImageFile> productImageFiles;
+        public int? Id { get; set; }
+        public string? FileName { get; set; }
+        public string? Path { get; set; }
+        
     }
 }

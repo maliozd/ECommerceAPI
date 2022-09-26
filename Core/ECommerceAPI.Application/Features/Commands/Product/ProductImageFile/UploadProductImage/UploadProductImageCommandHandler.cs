@@ -23,7 +23,7 @@ namespace ECommerceAPI.Application.Features.Commands.Product.ProductImageFile.Up
             List<(string fileName, string pathOrContainer)> result = await _storageService.UploadAsync("photo-images", request.Files);
 
             var product = await _productReadRepository.GetByIdAsync(request.Id);
-            await _productImageFileWriteRepository.AddRangeAsync(result.Select(r => new Domain.Entities.ProductImageFile
+            await _productImageFileWriteRepository.AddRangeAsync(result.Select(r => new Domain.Entities.FileEntities.ProductImageFile
             {
                 FileName = r.fileName,
                 Path = r.pathOrContainer,

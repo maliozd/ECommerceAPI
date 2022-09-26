@@ -6,6 +6,7 @@ using ECommerceAPI.Application.Features.Commands.Product.ProductImageFile.Upload
 using ECommerceAPI.Application.Features.Commands.UpdateProduct;
 using ECommerceAPI.Application.Features.Queries.Product.GetAllProduct;
 using ECommerceAPI.Application.Features.Queries.Product.GetByIdProduct;
+using ECommerceAPI.Application.Features.Queries.ProductImageFile.GetByIdProductImageFile;
 using ECommerceAPI.Application.Repositories;
 using ECommerceAPI.Application.Repositories.ProductImageFileRepository;
 using ECommerceAPI.Domain.Entities;
@@ -22,7 +23,7 @@ namespace ECommerceAPI.API.Controllers
 
         readonly IMediator _mediator;
         public ProductsController(IMediator mediator)
-        {           
+        {
             _mediator = mediator;
         }
         [HttpGet]
@@ -30,9 +31,9 @@ namespace ECommerceAPI.API.Controllers
         {
             var response = await _mediator.Send(getAllProductQueryRequest);
             return Ok(response);
-        } 
+        }
         [HttpGet("{Id}")]
-        public async Task<IActionResult> Get([FromRoute]GetByIdProductRequest getByIdProductRequest)
+        public async Task<IActionResult> Get([FromRoute] GetByIdProductRequest getByIdProductRequest)
         {
             var response = await _mediator.Send(getByIdProductRequest);
             return Ok(response);
@@ -47,43 +48,38 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody]UpdateProductCommandRequest updateProductCommandRequest) //sent updateRequest with body from client
+        public async Task<IActionResult> Put([FromBody] UpdateProductCommandRequest updateProductCommandRequest) //sent updateRequest with body from client
         {
             var response = await _mediator.Send(updateProductCommandRequest);
             return Ok(response);
         }
         [HttpDelete("{Id}")]
-        public async Task<IActionResult> Delete([FromRoute]DeleteByIdProductCommandRequest deleteByIdProductCommandRequest)
+        public async Task<IActionResult> Delete([FromRoute] DeleteByIdProductCommandRequest deleteByIdProductCommandRequest)
         {
             var response = await _mediator.Send(deleteByIdProductCommandRequest);
             return Ok(response);
-        } 
+        }
 
         [HttpPost("[action]")]  //http//../api/controller/action
-        public async Task<IActionResult> Upload([FromQuery]UploadProductImageCommandRequest uploadProductImageCommandRequest)
+        public async Task<IActionResult> Upload([FromQuery] UploadProductImageCommandRequest uploadProductImageCommandRequest)
         {
             uploadProductImageCommandRequest.Files = Request.Form.Files;
             var response = await _mediator.Send(uploadProductImageCommandRequest);
             return Ok();
         }
 
-        //[HttpGet("[action]/{Id}")] //alınacak parametre burdaki gibi routeda belirtilmiyorsa, parametre query stringten gelecektir.
-        //public async Task<IActionResult> GetProductImages(int id)
-        //{
-        //    //Product? product = await _productReadRepository.Table.Include(p => p.ProductImageFiles).FirstOrDefaultAsync(p => p.Id == id);
-        //    //return Ok(product.ProductImageFiles.Select(p => new
-        //    //{
-        //    //    Path = $"{configuration["BaseStorageUrl"]}/{p.Path}",
-        //    //    p.FileName,
-        //    //    p.Id
-        //    //}));
-        //}
+        [HttpGet("[action]/{Id}")] //alınacak parametre burdaki gibi routeda belirtilmiyorsa, parametre query stringten gelecektir.
+        public async Task<IActionResult> GetProductImages([FromRoute]GetByIdProductImageFileQueryRequest getByIdProductImageFileQueryRequest)
+        {
+            var response = await _mediator.Send(getByIdProductImageFileQueryRequest);
+            return Ok(response);
+        }
         [HttpDelete("[action]/{Id}")] //imageId queryStringden, productId routedan gelecek.
-        public async Task<IActionResult> DeleteProductImage([FromRoute]DeleteProductImageCommandRequest deleteProductImageCommandRequest,[FromQuery] int imageId)
+        public async Task<IActionResult> DeleteProductImage([FromRoute] DeleteProductImageCommandRequest deleteProductImageCommandRequest, [FromQuery] int imageId)
         {
             deleteProductImageCommandRequest.ImageId = imageId;
             var response = await _mediator.Send(deleteProductImageCommandRequest);
             return Ok(response);
-        }      
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ECommerceAPI.Application.Repositories.ProductImageFileRepository;
 using ECommerceAPI.Domain.Entities;
+using ECommerceAPI.Domain.Entities.FileEntities;
 using ECommerceAPI.Persistence.Contexts;
 using System;
 using System.Collections.Generic;

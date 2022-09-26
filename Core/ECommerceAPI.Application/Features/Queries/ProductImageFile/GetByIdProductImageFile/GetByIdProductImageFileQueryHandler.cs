@@ -10,29 +10,35 @@ using System.Threading.Tasks;
 
 namespace ECommerceAPI.Application.Features.Queries.ProductImageFile.GetByIdProductImageFile
 {
-    public class GetByIdProductImageFileQueryHandler : IRequestHandler<GetByIdProductImageFileQueryRequest, GetByIdProductImageFileQueryResponse>
+    public class GetByIdProductImageFileQueryHandler : IRequestHandler<GetByIdProductImageFileQueryRequest, List<GetByIdProductImageFileQueryResponse>>
     {
         readonly IProductReadRepository _productReadRepository;
-        readonly IConfiguration _configuration;
+        readonly IConfiguration configuration;
 
 
         public GetByIdProductImageFileQueryHandler(IProductReadRepository productReadRepository, IConfiguration configuration)
         {
             _productReadRepository = productReadRepository;
-            _configuration = configuration;
+            this.configuration = configuration;
         }
 
-        public async Task<GetByIdProductImageFileQueryResponse> Handle(GetByIdProductImageFileQueryRequest request, CancellationToken cancellationToken)
+        public async Task<List<GetByIdProductImageFileQueryResponse>> Handle(GetByIdProductImageFileQueryRequest request, CancellationToken cancellationToken)
         {
-            var product = await _productReadRepository.Table.Include(p => p.ProductImageFiles).FirstOrDefaultAsync(p => p.Id == request.Id);
-            var image = product?.ProductImageFiles.Select(p => new
+            Domain.Entities.Product? product = await _productReadRepository.Table.Include(p => p.ProductImageFiles)
+                              .FirstOrDefaultAsync(p => p.Id == request.Id);
+
+            if (product?.ProductImageFiles.Count > 0)
             {
-                Path = $"{_configuration["BaseStorageUrl"]}/{p.Path}",
-                p.FileName,
-                p.Id
-            });
+                return product.ProductImageFiles.Select(p => new GetByIdProductImageFileQueryResponse
+                {
+                    Id = p.Id,
+                    Path = $"{configuration["BaseStorageUrl"]}/{p.Path}",
+                    FileName = p.FileName
+                }).ToList();
+            }
             return new();
         }
+
     }
 }
 
