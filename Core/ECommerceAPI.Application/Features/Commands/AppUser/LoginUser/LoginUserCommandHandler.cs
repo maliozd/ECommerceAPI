@@ -1,4 +1,6 @@
-﻿using ECommerceAPI.Application.Exceptions;
+﻿using ECommerceAPI.Application.Abstraction.Token;
+using ECommerceAPI.Application.Dtos;
+using ECommerceAPI.Application.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -13,13 +15,15 @@ namespace ECommerceAPI.Application.Features.Commands.AppUser.LoginUser
     {
         readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
         readonly SignInManager<Domain.Entities.Identity.AppUser> _signInManager;
+        readonly ITokenHandler _tokenHandler;
 
-        public LoginUserCommandHandler(SignInManager<Domain.Entities.Identity.AppUser> signInManager, UserManager<Domain.Entities.Identity.AppUser> userManager)
+        public LoginUserCommandHandler(SignInManager<Domain.Entities.Identity.AppUser> signInManager, UserManager<Domain.Entities.Identity.AppUser> userManager, ITokenHandler tokenHandler)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _tokenHandler = tokenHandler;
         }
-        //tedesco1234 qwe123
+        //tedesco qwerty
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
             var appUser = await _userManager.FindByNameAsync(request.UsernameOrEmail);
@@ -32,12 +36,15 @@ namespace ECommerceAPI.Application.Features.Commands.AppUser.LoginUser
             var signInResult = await _signInManager.CheckPasswordSignInAsync(appUser, request.Password, false);
             if (signInResult.Succeeded) //authentication ok
             {
-                //authorizaton                
+                return new LoginUserSuccessCommandResponse()
+                {
+                    Token = _tokenHandler.CreateJwtToken(20)
+                };
             }
-            return new LoginUserCommandResponse()
-            {
-                SuccessLogin = true
-            };
+            throw new UserLoginFailedException("Wrong password");
+
         }
+
     }
 }
+

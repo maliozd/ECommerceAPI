@@ -11,6 +11,7 @@ using ECommerceAPI.Application.Repositories;
 using ECommerceAPI.Application.Repositories.ProductImageFileRepository;
 using ECommerceAPI.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,7 @@ namespace ECommerceAPI.API.Controllers
 {//TEST
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Admin")] //status code 401 --> unauthorized
     public class ProductsController : ControllerBase
     {
 
