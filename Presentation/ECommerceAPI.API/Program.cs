@@ -32,10 +32,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
             ValidAudience = builder.Configuration["Token:Audience"],
             ValidIssuer = builder.Configuration["Token:Issuer"],
-            LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"])),//byte
+            LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false
 
-            NameClaimType = ClaimTypes.Name //JWT üzerinde Name claimne karsýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
+
+            //NameClaimType = ClaimTypes.Name //JWT üzerinde Name claimne karsýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
         };
     });
 
@@ -60,7 +61,7 @@ app.UseStaticFiles();
 app.UseCors(); //*belirlediðimiz politikayý 
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

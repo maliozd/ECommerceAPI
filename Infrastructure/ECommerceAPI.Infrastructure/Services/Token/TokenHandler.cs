@@ -30,7 +30,7 @@ namespace ECommerceAPI.Infrastructure.Services.Token
 
             token.Expiration = DateTime.UtcNow.AddMinutes(expirationMinute);
             JwtSecurityToken jwtSecurityToken = new(
-                audience: configuration["Token:Audience"],
+               audience: configuration["Token:Audience"],
                issuer: configuration["Token:Issuer"],
                expires: token.Expiration,
                notBefore: DateTime.UtcNow, // token üretildiği andan ne kadar süre sonra devreye girsin
