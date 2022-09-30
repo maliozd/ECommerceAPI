@@ -41,7 +41,10 @@ namespace ECommerceAPI.Application.Features.Commands.AppUser.LoginUser
                     Token = _tokenHandler.CreateJwtToken(5)
                 };
             }
-            throw new UserLoginFailedException("Wrong password");
+            return new LoginUserErrorCommandResponse()
+            {
+                Message = "Error"
+            };
 
         }
 
