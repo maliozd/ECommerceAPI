@@ -53,5 +53,12 @@ namespace ECommerceAPI.Infrastructure.BasicServices
                  .Replace("|", "");
             return name;
         }
+        public static string RenameGoogleUser(string name)
+        {
+            var newGuid = Guid.NewGuid().ToString();
+            var rangeToTakeFromNewGuid = new Random().Next(newGuid.Length);
+            string newName = name.Split(' ')[0];
+            return $"{newName[..1]}-{newName[1..]}{newGuid[..4].ToUpper()}{newGuid[..rangeToTakeFromNewGuid]}" + newName[..2];
+        }
     }
 }

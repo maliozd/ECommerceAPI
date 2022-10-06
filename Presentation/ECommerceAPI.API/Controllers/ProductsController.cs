@@ -22,7 +22,6 @@ namespace ECommerceAPI.API.Controllers
     [Authorize(AuthenticationSchemes = "Admin")] //status code 401 --> unauthorized
     public class ProductsController : ControllerBase
     {
-
         readonly IMediator _mediator;
         public ProductsController(IMediator mediator)
         {

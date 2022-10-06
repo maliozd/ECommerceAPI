@@ -1,4 +1,6 @@
-﻿using ECommerceAPI.Application.Exceptions;
+﻿using ECommerceAPI.Application.Abstraction.Services;
+using ECommerceAPI.Application.Dtos.User;
+using ECommerceAPI.Application.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -6,35 +8,29 @@ namespace ECommerceAPI.Application.Features.Commands.AppUser.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
     {
-        readonly UserManager<ECommerceAPI.Domain.Entities.Identity.AppUser> _userManager;
+        readonly IUserService userService;
 
-        public CreateUserCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager)
+        public CreateUserCommandHandler(IUserService userService)
         {
-            _userManager = userManager;
+            this.userService = userService;
         }
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            IdentityResult result = await _userManager.CreateAsync(new()
+            CreateUserDTO dto = new()
             {
-                Id = Guid.NewGuid().ToString(),
-                UserName = request.Username,
+                NameSurname = request.NameSurname,
+                Username = request.Username,
                 Email = request.Email,
-                NameSurname = request.NameSurname
-
-            }, request.Password);
-            CreateUserCommandResponse response = new()
+                Password = request.Password,
+                PasswordConfirm = request.PasswordConfirm,
+            };
+            var response = await userService.CreateAsync(dto);
+            return new()
             {
-                Success = result.Succeeded
-            };          
-            if (result.Succeeded)
-                response.Message = "New user successfully created.";
-            else
-            {
-                foreach (var error in result.Errors)
-                    response.Message += $"{error.Code}- {error.Description}\n";
-            }
-            return response;
+                Message = response.Message,
+                Success = response.Success,
+            };
         }
     }
 }

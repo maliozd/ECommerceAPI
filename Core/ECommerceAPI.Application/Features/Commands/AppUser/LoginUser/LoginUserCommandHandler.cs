@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Application.Abstraction.Token;
+﻿using ECommerceAPI.Application.Abstraction.Services.Authentication;
+using ECommerceAPI.Application.Abstraction.Token;
 using ECommerceAPI.Application.Dtos;
 using ECommerceAPI.Application.Exceptions;
 using MediatR;
@@ -13,39 +14,25 @@ namespace ECommerceAPI.Application.Features.Commands.AppUser.LoginUser
 {
     public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, LoginUserCommandResponse>
     {
-        readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
-        readonly SignInManager<Domain.Entities.Identity.AppUser> _signInManager;
-        readonly ITokenHandler _tokenHandler;
+        readonly IAuthenticationService _authenticationService; //*
 
-        public LoginUserCommandHandler(SignInManager<Domain.Entities.Identity.AppUser> signInManager, UserManager<Domain.Entities.Identity.AppUser> userManager, ITokenHandler tokenHandler)
+        public LoginUserCommandHandler(IAuthenticationService authenticationService)
         {
-            _signInManager = signInManager;
-            _userManager = userManager;
-            _tokenHandler = tokenHandler;
+            _authenticationService = authenticationService;
         }
         //tedesco qwerty
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            var appUser = await _userManager.FindByNameAsync(request.UsernameOrEmail);
-            if (appUser == null)
-                appUser = await _userManager.FindByEmailAsync(request.UsernameOrEmail);
-
-            if (appUser == null)
-                throw new UserLoginFailedException("Wrong username or email");
-
-            var signInResult = await _signInManager.CheckPasswordSignInAsync(appUser, request.Password, false);
-            if (signInResult.Succeeded) //authentication ok
+            var response = await _authenticationService.LoginAsync(request.UsernameOrEmail, request.Password, 60);
+            if (response == null)
             {
-                return new LoginUserSuccessCommandResponse()
-                {
-                    Token = _tokenHandler.CreateJwtToken(5)
-                };
+                throw new Exception();
             }
-            return new LoginUserErrorCommandResponse()
+            LoginUserSuccessCommandResponse loginUserCommandResponse = new()
             {
-                Message = "Error"
+                Token = response
             };
-
+            return loginUserCommandResponse;
         }
 
     }

@@ -4,22 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerceAPI.Application.Services
+namespace ECommerceAPI.Persistence.Services.Basic
 {
-    public static class RenameNewUser
+    public class NameService
     {
         public static string RenameGoogleUser(string name)
         {
             var newGuid = Guid.NewGuid().ToString();
             var rangeToTakeFromNewGuid = new Random().Next(newGuid.Length);
-            string newName = GetFirstWord(name);
+            string newName = name.Split(' ')[0];
             return $"{newName[..1]}-{newName[1..]}{newGuid[..4].ToUpper()}{newGuid[..rangeToTakeFromNewGuid]}" + newName[..2];
-        }
-
-        private static string GetFirstWord(string words)
-        {
-            string[] newWords = words.Split(' ');
-            return newWords[0];
         }
     }
 }
