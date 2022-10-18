@@ -8,6 +8,7 @@ namespace ECommerceAPI.Application.Abstraction.Token
 {
     public interface ITokenHandler
     {
-        Dtos.Token CreateJwtToken(int expirationMinute);
+        Dtos.Token CreateAccessToken(int expirationSecond);
+        string CreateRefreshToken();
     }
 }

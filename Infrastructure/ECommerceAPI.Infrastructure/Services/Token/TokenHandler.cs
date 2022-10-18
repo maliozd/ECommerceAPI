@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,17 +19,17 @@ namespace ECommerceAPI.Infrastructure.Services.Token
             this.configuration = configuration;
         }
 
-        public Application.Dtos.Token CreateJwtToken(int expirationMinute)
+        public Application.Dtos.Token CreateAccessToken(int expirationSecond)
         {
             Application.Dtos.Token token = new()
             {
-                Expiration = DateTime.UtcNow.AddMinutes(expirationMinute)
+                Expiration = DateTime.UtcNow.AddMinutes(expirationSecond)
             };
 
             SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(configuration["Token:SecurityKey"]));
             SigningCredentials credentials = new(key, SecurityAlgorithms.HmacSha256); //şifrelenmiş kimlik
 
-            token.Expiration = DateTime.UtcNow.AddMinutes(expirationMinute);
+            token.Expiration = DateTime.UtcNow.AddSeconds(expirationSecond);
             JwtSecurityToken jwtSecurityToken = new(
                audience: configuration["Token:Audience"],
                issuer: configuration["Token:Issuer"],
@@ -38,7 +39,16 @@ namespace ECommerceAPI.Infrastructure.Services.Token
                );
             JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
             token.AccessToken = jwtSecurityTokenHandler.WriteToken(jwtSecurityToken);
+            token.RefreshToken = CreateRefreshToken();
             return token;
+        }
+
+        public string CreateRefreshToken()
+        {
+            byte[] number = new byte[32];
+            using RandomNumberGenerator random = RandomNumberGenerator.Create();
+            random.GetBytes(number);
+            return Convert.ToBase64String(number);
         }
     }
 }

@@ -23,14 +23,14 @@ namespace ECommerceAPI.Application.Features.Commands.AppUser.LoginUser
         //tedesco qwerty
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            var response = await _authenticationService.LoginAsync(request.UsernameOrEmail, request.Password, 60);
-            if (response == null)
+            var tokenResponse = await _authenticationService.LoginAsync(request.UsernameOrEmail, request.Password, 20);
+            if (tokenResponse == null)
             {
                 throw new Exception();
             }
             LoginUserSuccessCommandResponse loginUserCommandResponse = new()
             {
-                Token = response
+                Token = tokenResponse
             };
             return loginUserCommandResponse;
         }
