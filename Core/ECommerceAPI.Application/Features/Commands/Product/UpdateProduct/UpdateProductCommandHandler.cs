@@ -1,5 +1,6 @@
 ﻿using ECommerceAPI.Application.Repositories;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace ECommerceAPI.Application.Features.Commands.UpdateProduct
         {
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
+           
         }
         public async Task<UpdateProductCommandResponse> Handle(UpdateProductCommandRequest request, CancellationToken cancellationToken)
         {

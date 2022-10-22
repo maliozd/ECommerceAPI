@@ -1,4 +1,2 @@
-NAMESPACE
-InvoiceFile,ProductImageFile entities namespaceine çekildi. Persistence bütün concrete , base Write-Read hariç, Persistence.Repositories.Concrete ' e çekildi.
-
-09/24 last
+toDo ->
+-log username

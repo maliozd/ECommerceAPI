@@ -25,7 +25,8 @@ namespace ECommerceAPI.Application.Features.Commands.AppUser.RefreshTokenLogin
                 {
                     Token = await _authenticationService.RefreshTokenLoginAsync(request.RefreshToken)
                 };
-            
+            }
+
             catch (Exception)
             {
                 throw;

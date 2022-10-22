@@ -61,7 +61,7 @@ namespace ECommerceAPI.Persistence.Services.Authentication
                     if (result)
                     {
                         await _userManager.AddLoginAsync(user, userInfo);        //added to aspNetUserLogins  
-                        Token token = _tokenHandler.CreateAccessToken(tokenLifeTime);
+                        Token token = _tokenHandler.CreateAccessToken(tokenLifeTime,user);
                        await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 10);
                         return token;
                     }
@@ -71,7 +71,7 @@ namespace ECommerceAPI.Persistence.Services.Authentication
                     }
                 }
             }
-            Token _token = _tokenHandler.CreateAccessToken(tokenLifeTime);
+            Token _token = _tokenHandler.CreateAccessToken(tokenLifeTime,user);
             await _userService.UpdateRefreshTokenAsync(_token.RefreshToken, user, _token.Expiration, 10);
             return _token;
         }
@@ -86,7 +86,7 @@ namespace ECommerceAPI.Persistence.Services.Authentication
             var signInResult = await _signInManager.CheckPasswordSignInAsync(user, password, false);
             if (signInResult.Succeeded) //authentication ok
             {
-                Token token = _tokenHandler.CreateAccessToken(tokenLifeTime);
+                Token token = _tokenHandler.CreateAccessToken(tokenLifeTime,user);
                 await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 10);
 
                 return token;
@@ -101,7 +101,7 @@ namespace ECommerceAPI.Persistence.Services.Authentication
             {
                 throw new UserLoginFailedException("Invalid Token");
             }
-            var token = _tokenHandler.CreateAccessToken(20);
+            var token = _tokenHandler.CreateAccessToken(20,user);
             await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 20);
             return token;
 

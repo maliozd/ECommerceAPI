@@ -4,6 +4,7 @@ using ECommerceAPI.Application.Dtos;
 using ECommerceAPI.Application.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace ECommerceAPI.Application.Features.Commands.AppUser.LoginUser
         {
             var tokenResponse = await _authenticationService.LoginAsync(request.UsernameOrEmail, request.Password, 20);
             if (tokenResponse == null)
-            {
+            {                
                 throw new Exception();
             }
             LoginUserSuccessCommandResponse loginUserCommandResponse = new()

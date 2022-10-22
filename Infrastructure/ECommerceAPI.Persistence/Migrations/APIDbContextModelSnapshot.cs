@@ -51,7 +51,7 @@ namespace ECommerceAPI.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Files");
+                    b.ToTable("Files", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseFile");
                 });
@@ -76,7 +76,7 @@ namespace ECommerceAPI.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.Identity.AppRole", b =>
@@ -210,7 +210,7 @@ namespace ECommerceAPI.Persistence.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.Product", b =>
@@ -239,7 +239,7 @@ namespace ECommerceAPI.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -360,7 +360,7 @@ namespace ECommerceAPI.Persistence.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("OrderProduct");
+                    b.ToTable("OrderProduct", (string)null);
                 });
 
             modelBuilder.Entity("ProductProductImageFile", b =>
@@ -375,7 +375,7 @@ namespace ECommerceAPI.Persistence.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("ProductProductImageFile");
+                    b.ToTable("ProductProductImageFile", (string)null);
                 });
 
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.FileEntities.ProductImageFile", b =>

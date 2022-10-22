@@ -38,14 +38,14 @@ namespace ECommerceAPI.Persistence.Services
             return response;
         }
 
-        public async Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, DateTime accessTokenExpirationDate,int addSecondOnAccessToken)
+        public async Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, DateTime accessTokenExpirationDate,int addMinuteOnAccessToken)
         {
             if (user == null)
             {
                 throw new NotFoundUserException();
             }
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpireDate = accessTokenExpirationDate.AddSeconds(addSecondOnAccessToken);
+            user.RefreshTokenExpireDate = accessTokenExpirationDate.AddMinutes(addMinuteOnAccessToken);
             await _userManager.UpdateAsync(user);
         }
     }
