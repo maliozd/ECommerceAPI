@@ -11,11 +11,11 @@ namespace ECommerceAPI.Application.Features.Commands.Product.ProductImageFile.Up
         readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
         readonly IStorageService _storageService;
 
-        public UploadProductImageCommandHandler(IProductReadRepository productReadRepository, IProductImageFileWriteRepository productImageFileWriteRepository,IStorageService storageService)
+        public UploadProductImageCommandHandler(IProductReadRepository productReadRepository, IProductImageFileWriteRepository productImageFileWriteRepository, IStorageService storageService)
         {
             _productReadRepository = productReadRepository;
-            _productImageFileWriteRepository= productImageFileWriteRepository;
-            _storageService = storageService; 
+            _productImageFileWriteRepository = productImageFileWriteRepository;
+            _storageService = storageService;
         }
         public async Task<UploadProductImageCommandResponse> Handle(UploadProductImageCommandRequest request, CancellationToken cancellationToken)
         {
@@ -28,8 +28,8 @@ namespace ECommerceAPI.Application.Features.Commands.Product.ProductImageFile.Up
                 FileName = r.fileName,
                 Path = r.pathOrContainer,
                 Storage = _storageService.StorageName,
-                Products = new List<Domain.Entities.Product>() { product
-    }
+                Products = new List<Domain.Entities.Product>() { product },
+
             }).ToList());
             await _productImageFileWriteRepository.SaveAsync();
             return new();

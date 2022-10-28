@@ -4,6 +4,7 @@ using Serilog.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,22 +23,26 @@ namespace ECommerceAPI.API.ColumnModel
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
+    //    / <summary>
+    //    / 
+    //    / </summary>
     public class LogUserNameMiddleware
     {
         private readonly RequestDelegate next;
+        readonly IHttpContextAccessor httpContextAccessor;
 
-        public LogUserNameMiddleware(RequestDelegate next)
+        public LogUserNameMiddleware(RequestDelegate next, IHttpContextAccessor httpContextAccessor)
         {
             this.next = next;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public Task Invoke(HttpContext context)
         {
             LogContext.PushProperty("UserName", context.User.Identity.Name);
-
+            var userName = httpContextAccessor.HttpContext.User.Identity.Name;
+            var ab = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            var a = 1;
             return next(context);
         }
     }

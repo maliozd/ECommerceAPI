@@ -39,8 +39,10 @@ namespace ECommerceAPI.Persistence.Repositories
             return await Table.FindAsync(id);
         }
         public async Task<T> GetSingleAsync(Expression<Func<T, bool>> expression)
-        {           
-            return await Table.FindAsync(expression);
+        {
+            var query = Table.AsQueryable();
+            
+            return await query.FirstOrDefaultAsync(expression);
         }
 
         public IQueryable<T> GetWhere(Expression<Func<T, bool>> expression)

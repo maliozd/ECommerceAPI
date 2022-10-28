@@ -1,5 +1,6 @@
 ﻿using ECommerceAPI.Application.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -22,14 +23,15 @@ namespace ECommerceAPI.Application.Features.Queries.Product.GetAllProduct
         {
             this.logger.LogInformation("Ürünler listelendi.");
             var totalCount = _productReadRepository.GetAll().Count();
-            var products = _productReadRepository.GetAll().Skip(request.Page * request.Size).Take(request.Size).Select(p => new
+            var products = _productReadRepository.GetAll().Skip(request.Page * request.Size).Take(request.Size).Include(x => x.ProductImageFiles).Select(p => new
             {
                 p.Id,
                 p.Name,
                 p.Stock,
                 p.Price,
                 p.CreatedDate,
-                p.UpdatedDate
+                p.UpdatedDate,
+                p.ProductImageFiles
             }).ToList();
 
             return new()

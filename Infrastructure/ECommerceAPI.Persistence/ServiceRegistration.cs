@@ -1,5 +1,8 @@
-﻿using ECommerceAPI.Application.Abstraction.Services;
+﻿using ECommerceAPI.Application.Abstraction.Repositories.BasketItemRepository;
+using ECommerceAPI.Application.Abstraction.Repositories.BasketRepository;
+using ECommerceAPI.Application.Abstraction.Services;
 using ECommerceAPI.Application.Abstraction.Services.Authentication;
+using ECommerceAPI.Application.Abstraction.Services.Basket;
 using ECommerceAPI.Application.Repositories;
 using ECommerceAPI.Application.Repositories.CustomerRepository;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepository;
@@ -7,6 +10,8 @@ using ECommerceAPI.Application.Repositories.ProductImageFileRepository;
 using ECommerceAPI.Domain.Entities.Identity;
 using ECommerceAPI.Persistence.Contexts;
 using ECommerceAPI.Persistence.Repositories.Concrete;
+using ECommerceAPI.Persistence.Repositories.Concrete.BasketItemRepository;
+using ECommerceAPI.Persistence.Repositories.Concrete.BasketRepository;
 using ECommerceAPI.Persistence.Repositories.Concrete.ProductRepository;
 using ECommerceAPI.Persistence.Services;
 using ECommerceAPI.Persistence.Services.Authentication;
@@ -37,16 +42,30 @@ namespace ECommerceAPI.Persistence
             //repository
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
             _ = services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
+
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
+
             services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
             services.AddScoped<IOrderReadRepository, OrderReadRepository>();
+
             services.AddScoped<IFileReadRepository, FileReadRepository>();
             services.AddScoped<IFileWriteRepository, FileWriteRepository>();
+
             services.AddScoped<IInvoiceFileReadRepository, InvoiceFileReadRepository>();
             services.AddScoped<IInvoiceFileWriteRepository, InvoiceFileWriteRepository>();
+
             services.AddScoped<IProductImageFileReadRepository, ProductImageFileReadRepository>();
             services.AddScoped<IProductImageFileWriteRepository, ProductImageFileWriteRepository>();
+
+            services.AddScoped<IBasketItemReadRepository, BasketItemReadRepository>();
+            services.AddScoped<IBasketItemWriteRepository, BasketItemWriteRepository>();
+
+            services.AddScoped<IBasketWriteRepository, BasketWriteRepository>();
+            services.AddScoped<IBasketReadRepository, BasketReadRepository>();
+
+
+            services.AddScoped<IBasketService, BasketService>();
         }
     }
 }

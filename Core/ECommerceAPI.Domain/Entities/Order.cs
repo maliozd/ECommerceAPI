@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Domain.Entities.Common;
+﻿using ECommerceAPI.Domain.Entities.BasketEntities;
+using ECommerceAPI.Domain.Entities.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace ECommerceAPI.Domain.Entities
         public string Address { get; set; } //DDD
         public ICollection<Product> Products { get; set; }
         public Customer Customer { get; set; }
+        public Basket Basket { get; set; }
     }
 }

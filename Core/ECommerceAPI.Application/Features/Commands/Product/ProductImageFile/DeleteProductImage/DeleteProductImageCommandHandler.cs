@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Repositories;
+using ECommerceAPI.Application.Repositories.ProductImageFileRepository;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,10 +14,12 @@ namespace ECommerceAPI.Application.Features.Commands.Product.ProductImageFile.De
     {
         readonly IProductReadRepository _productReadRepository;
         readonly IProductWriteRepository _productWriteRepository;
-        public DeleteProductImageCommandHandler(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository)
+        readonly IProductImageFileWriteRepository productImageFileWriteRepository;
+        public DeleteProductImageCommandHandler(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository, IProductImageFileWriteRepository productImageFileWriteRepository)
         {
             _productReadRepository = productReadRepository;
             _productWriteRepository = productWriteRepository;
+            this.productImageFileWriteRepository = productImageFileWriteRepository;
         }
         public async Task<DeleteProductImageCommandResponse> Handle(DeleteProductImageCommandRequest request, CancellationToken cancellationToken)
         {
@@ -25,6 +28,7 @@ namespace ECommerceAPI.Application.Features.Commands.Product.ProductImageFile.De
             if (productImageFile != null)
             {
                 product?.ProductImageFiles.Remove(productImageFile);
+                productImageFileWriteRepository.Remove(productImageFile);
                 await _productWriteRepository.SaveAsync();
                 return new() { Success = true };
             }
