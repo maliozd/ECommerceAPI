@@ -25,6 +25,16 @@ namespace ECommerceAPI.Persistence.Services
         readonly IBasketItemWriteRepository _basketItemWriteRepository;
         readonly IBasketItemReadRepository _basketItemReadRepository;
         readonly IBasketReadRepository _basketReadRepository;
+
+        public Basket? UserActiveBasket
+        {
+            get
+            {
+                Basket basket = GetUserBasketAsync().Result;
+                return basket;
+            }
+        }
+
         public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IOrderReadRepository orderReadRepository, IBasketWriteRepository basketWriteRepository, IBasketItemWriteRepository basketItemWriteRepository, IBasketItemReadRepository basketItemReadRepository, IBasketReadRepository basketReadRepository)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -52,7 +62,7 @@ namespace ECommerceAPI.Persistence.Services
                                   Order = order,
                               };
                 Basket? targetBasket = null;
-                if (_basket.Any(b => b.Order is null))
+                if (_basket.Any(b => b.Order is null))  //active basket
                 {
                     targetBasket = _basket.FirstOrDefault(b => b.Order is null)?.basket;
                 }
@@ -60,7 +70,6 @@ namespace ECommerceAPI.Persistence.Services
                 {
                     targetBasket = new();
                     appUser.Baskets.Add(targetBasket);
-
                 }
 
                 await _basketWriteRepository.SaveAsync();
@@ -118,5 +127,7 @@ namespace ECommerceAPI.Persistence.Services
                 await _basketItemWriteRepository.SaveAsync();
             }
         }
+
+
     }
 }

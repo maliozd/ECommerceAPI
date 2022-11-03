@@ -9,6 +9,6 @@ namespace ECommerceAPI.Domain.Entities.Common
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public DateTime? CreatedDate { get; set; }
-        virtual public DateTime? UpdatedDate { get; set; } //virtual ile ezilebilirliğine müdahale ettik.
+        virtual public DateTime? UpdatedDate { get; set; } 
     }
 }

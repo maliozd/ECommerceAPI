@@ -11,7 +11,6 @@ namespace ECommerceAPI.Application.Repositories
     public interface IRepository<T>  where T : BaseEntity
     {
         //base repository olacak. global nesneleri tutacak.
-        //Generic repository yapmak için generic nesneler kullanman lazım
         DbSet<T> Table { get; }
     }
 }

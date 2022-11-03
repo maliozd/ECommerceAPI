@@ -9,5 +9,6 @@ namespace ECommerceAPI.Application.Abstraction.Services.Basket
         Task AddItemAsync(VM_Create_BasketItem basketItem);
         Task UpdateQuantityAsync(VM_Update_BasketItem basketItem);
         Task RemoveItemAsync(int basketItemId);
+        ECommerceAPI.Domain.Entities.BasketEntities.Basket? UserActiveBasket { get; }
     }
 }

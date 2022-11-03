@@ -44,7 +44,7 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = "Admin")] //status code 401 --> unauthorized
+        [Authorize(AuthenticationSchemes = "Admin")] 
 
         public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest)
         {
@@ -54,7 +54,7 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = "Admin")] //status code 401 --> unauthorized
+        [Authorize(AuthenticationSchemes = "Admin")] 
 
         public async Task<IActionResult> Put([FromBody] UpdateProductCommandRequest updateProductCommandRequest) //sent updateRequest with body from client
         {
@@ -62,7 +62,7 @@ namespace ECommerceAPI.API.Controllers
             return Ok(response);
         }
         [HttpDelete("{Id}")]
-        [Authorize(AuthenticationSchemes = "Admin")] //status code 401 --> unauthorized
+        [Authorize(AuthenticationSchemes = "Admin")] 
 
         public async Task<IActionResult> Delete([FromRoute] DeleteByIdProductCommandRequest deleteByIdProductCommandRequest)
         {

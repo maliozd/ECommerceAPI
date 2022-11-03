@@ -1,8 +1,10 @@
 ﻿using ECommerceAPI.Application.Abstraction.Repositories.BasketItemRepository;
 using ECommerceAPI.Application.Abstraction.Repositories.BasketRepository;
+using ECommerceAPI.Application.Abstraction.Repositories.CompletedOrderRepository;
 using ECommerceAPI.Application.Abstraction.Services;
 using ECommerceAPI.Application.Abstraction.Services.Authentication;
 using ECommerceAPI.Application.Abstraction.Services.Basket;
+using ECommerceAPI.Application.Abstraction.Services.Order;
 using ECommerceAPI.Application.Repositories;
 using ECommerceAPI.Application.Repositories.CustomerRepository;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepository;
@@ -12,9 +14,11 @@ using ECommerceAPI.Persistence.Contexts;
 using ECommerceAPI.Persistence.Repositories.Concrete;
 using ECommerceAPI.Persistence.Repositories.Concrete.BasketItemRepository;
 using ECommerceAPI.Persistence.Repositories.Concrete.BasketRepository;
+using ECommerceAPI.Persistence.Repositories.Concrete.CompletedOrderRepository;
 using ECommerceAPI.Persistence.Repositories.Concrete.ProductRepository;
 using ECommerceAPI.Persistence.Services;
 using ECommerceAPI.Persistence.Services.Authentication;
+using ECommerceAPI.Persistence.Services.Order;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -65,7 +69,11 @@ namespace ECommerceAPI.Persistence
             services.AddScoped<IBasketReadRepository, BasketReadRepository>();
 
 
+            services.AddScoped<ICompletedOrderReadRepository, CompletedOrderReadRepository>();
+            services.AddScoped<ICompletedOrderWriteRepository, CompletedOrderWriteRepository>();
+
             services.AddScoped<IBasketService, BasketService>();
+            services.AddScoped<IOrderService, OrderService>();
         }
     }
 }

@@ -29,10 +29,9 @@ namespace ECommerceAPI.Persistence.Repositories
             var data = Table.AsQueryable();
             return data;
         }
-        public async Task<T> GetByIdAsync(int id/*,bool tracking*/)
+        public async Task<T> GetByIdAsync(int id)
         {
             //var data = Table.AsQueryable();
-            //if (!tracking) Write işlemi olmadığı için, doğal olarak değişiklik de olmayacağı için veri trackingini kapatabiliriz. ekstra yükten kurtaran bir optimizasyon
             //{
             //    data.AsNoTracking();
             //}

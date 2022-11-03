@@ -21,7 +21,7 @@ namespace ECommerceAPI.Application.Features.Queries.Product.GetAllProduct
         }
         public async Task<GetAllProductQueryResponse> Handle(GetAllProductQueryRequest request, CancellationToken cancellationToken)
         {
-            this.logger.LogInformation("Ürünler listelendi.");
+            this.logger.LogInformation("GetAllProduct log example.");
             var totalCount = _productReadRepository.GetAll().Count();
             var products = _productReadRepository.GetAll().Skip(request.Page * request.Size).Take(request.Size).Include(x => x.ProductImageFiles).Select(p => new
             {
