@@ -28,6 +28,7 @@ namespace ECommerceAPI.Application.Features.Queries.Order.GetByIdOrder
                 CreatedDate = order.CreatedDate,
                 Description = order.Description,
                 OrderCode = order.OrderCode,
+                IsCompleted = order.isCompleted
             };
 
         }

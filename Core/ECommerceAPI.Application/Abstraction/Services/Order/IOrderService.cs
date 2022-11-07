@@ -8,5 +8,6 @@ namespace ECommerceAPI.Application.Abstraction.Services.Order
         Task<ListOrderDto> GetAllOrdersAsync(int page, int size);
         Task<SingleOrder> GetOrderByIdAsync(int id);
         Task<bool> DeleteOrderAsync(int id);
+        Task<bool> CompleteOrderAsync(int id);
     }
 }

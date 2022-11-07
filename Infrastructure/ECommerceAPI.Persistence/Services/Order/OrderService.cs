@@ -58,7 +58,7 @@ namespace ECommerceAPI.Persistence.Services.Order
                             CreatedDate = order.CreatedDate,
                             OrderCode = order.OrderCode,
                             Basket = order.Basket,
-                            Completed = _co != null ? true : false
+                            Completed = _co == null ? false : true
                         };
             return new()
             {
@@ -70,7 +70,7 @@ namespace ECommerceAPI.Persistence.Services.Order
                     OrderCode = o.OrderCode,
                     TotalPrice = o.Basket.BasketItems.Sum(bi => bi.Product.Price * bi.Quantity),
                     UserName = o.Basket.User.UserName,
-                    o.Completed
+                    isCompleted = o.Completed
                 }).ToListAsync()
             };
 
@@ -78,38 +78,62 @@ namespace ECommerceAPI.Persistence.Services.Order
 
         public async Task<bool> DeleteOrderAsync(int id)
         {
-            await _orderWriteRepository.Remove(id);
-            await _completedOrderWriteRepository.AddAsync(new()
-            {
-                OrderId = id
-            });
-            await _completedOrderWriteRepository.SaveAsync();
+            await _orderWriteRepository.Remove(id);           
             var result = await _orderWriteRepository.SaveAsync();
             return result > 1 ? true : false;
         }
 
         public async Task<SingleOrder> GetOrderByIdAsync(int id)
         {
-            var order = await _orderReadRepository.Table.
+            var query =  _orderReadRepository.Table.
                 Include(o => o.Basket).
                 ThenInclude(b => b.BasketItems).
-                ThenInclude(bi => bi.Product).
-                FirstOrDefaultAsync(o => o.Id == id);
+                ThenInclude(bi => bi.Product);
+
+            var queryObject = await (from order in query     //anonymous object created from query
+                         join completedOrder in _completedOrderReadRepository.Table
+                          on order.Id equals completedOrder.OrderId into com
+                         from _com in com.DefaultIfEmpty()
+                         select new
+                         {
+                             Id = order.Id,
+                             CreatedDate = order.CreatedDate,
+                             OrderCode = order.OrderCode,
+                             Basket = order.Basket,
+                             isCompleted = _com == null ? false : true,
+                             Address = order.Address,
+                             Description = order.Description
+                         }).FirstOrDefaultAsync(o => o.Id == id);
+                                     
             return new()
             {
-                Id = order.Id,
-                BasketItems = order.Basket.BasketItems.Select(bi => new
+                Id = queryObject.Id,
+                BasketItems = queryObject.Basket.BasketItems.Select(bi => new
                 {
                     bi.Product.Name,
                     bi.Product.Price,
                     bi.Quantity
-
                 }),
-                Address = order.Address,
-                CreatedDate = order.CreatedDate,
-                OrderCode = order.OrderCode,
-                Description = order.Description,
+                Address = queryObject.Address,
+                CreatedDate = queryObject.CreatedDate,
+                OrderCode = queryObject.OrderCode,
+                Description = queryObject.Description,
+                isCompleted = queryObject.isCompleted
             };
+        }
+
+        public async Task<bool> CompleteOrderAsync(int id)
+        {
+            ECommerceAPI.Domain.Entities.Order order = await _orderReadRepository.GetByIdAsync(id);
+            if (order == null)
+                throw new Exception("Order not found");
+
+            await _completedOrderWriteRepository.AddAsync(new()
+            {
+                OrderId = id
+            });
+            var result = await _completedOrderWriteRepository.SaveAsync();
+            return result == 1 ? true : false;
         }
     }
 }

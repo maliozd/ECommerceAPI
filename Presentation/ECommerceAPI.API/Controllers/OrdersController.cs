@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Application.Features.Commands.Order.CreateOrder;
+﻿using ECommerceAPI.Application.Features.Commands.Order.CompleteOrder;
+using ECommerceAPI.Application.Features.Commands.Order.CreateOrder;
 using ECommerceAPI.Application.Features.Commands.Order.DeleteOrder;
 using ECommerceAPI.Application.Features.Commands.Product.DeleteProduct;
 using ECommerceAPI.Application.Features.Queries.Order;
@@ -25,9 +26,9 @@ namespace ECommerceAPI.API.Controllers
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Admin")] //status code 401 --> unauthorized
 
-        public async Task<IActionResult> CreateOrder(CreateOrderCommandRequest createOrderCommandRequest)
+        public async Task<IActionResult> CreateOrder(CreateOrderCommandRequest request)
         {
-            var response = await _mediator.Send(createOrderCommandRequest);
+            var response = await _mediator.Send(request);
             return Ok(response);
         }
 
@@ -39,16 +40,23 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpGet("{Id}")]
-        public async Task<IActionResult> GetOrderById([FromRoute]GetByIdOrderQueryRequest request)
+        public async Task<IActionResult> GetOrderById([FromRoute] GetByIdOrderQueryRequest request)
         {
             var response = await _mediator.Send(request);
             return Ok(response);
         }
 
         [HttpDelete("{Id}")]
-        public async Task<IActionResult> DeleteOrder([FromRoute] DeleteOrderByIdCommandRequest deleteByIdProductCommandRequest)
+        public async Task<IActionResult> DeleteOrder([FromRoute] DeleteOrderByIdCommandRequest request)
         {
-            var response = await _mediator.Send(deleteByIdProductCommandRequest);
+            var response = await _mediator.Send(request);
+            return Ok(response);
+        }
+
+        [HttpGet("complete-order/{Id}")]
+        public async Task<IActionResult> CompleteOrder([FromRoute] CompleteOrderCommandRequest request)
+        {
+            var response = await _mediator.Send(request);
             return Ok(response);
         }
     }

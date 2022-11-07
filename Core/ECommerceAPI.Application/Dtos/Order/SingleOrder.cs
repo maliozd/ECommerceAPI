@@ -14,5 +14,6 @@ namespace ECommerceAPI.Application.Dtos.Order
         public string Description { get; set; }
         public int Id { get; set; }
         public string OrderCode { get; set; }
+        public bool isCompleted { get; set; }
     }
 }
