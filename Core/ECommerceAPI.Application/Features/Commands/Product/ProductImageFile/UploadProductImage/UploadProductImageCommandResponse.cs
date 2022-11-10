@@ -8,5 +8,6 @@ namespace ECommerceAPI.Application.Features.Commands.Product.ProductImageFile.Up
 {
     public class UploadProductImageCommandResponse
     {
+        public bool Success { get; set; }   
     }
 }

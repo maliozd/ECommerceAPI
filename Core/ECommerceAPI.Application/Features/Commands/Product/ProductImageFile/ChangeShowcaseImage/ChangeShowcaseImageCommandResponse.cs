@@ -8,5 +8,6 @@ namespace ECommerceAPI.Application.Features.Commands.Product.ProductImageFile.Ch
 {
     public class ChangeShowcaseImageCommandResponse
     {
+        public bool Success { get; set; }
     }
 }

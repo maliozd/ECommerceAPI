@@ -5,6 +5,7 @@ using ECommerceAPI.Application.Abstraction.Services;
 using ECommerceAPI.Application.Abstraction.Services.Authentication;
 using ECommerceAPI.Application.Abstraction.Services.Basket;
 using ECommerceAPI.Application.Abstraction.Services.Order;
+using ECommerceAPI.Application.Abstraction.Services.Product;
 using ECommerceAPI.Application.Repositories;
 using ECommerceAPI.Application.Repositories.CustomerRepository;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepository;
@@ -19,6 +20,7 @@ using ECommerceAPI.Persistence.Repositories.Concrete.ProductRepository;
 using ECommerceAPI.Persistence.Services;
 using ECommerceAPI.Persistence.Services.Authentication;
 using ECommerceAPI.Persistence.Services.Order;
+using ECommerceAPI.Persistence.Services.Product;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -40,10 +42,9 @@ namespace ECommerceAPI.Persistence
                 options.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<APIDbContext>();
             services.AddScoped<IUserService, UserService>();
-
             services.AddScoped<IAuthenticationService, AuthenticationService>();
 
-            //repository
+            //repositories
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
             _ = services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
 
@@ -71,9 +72,11 @@ namespace ECommerceAPI.Persistence
 
             services.AddScoped<ICompletedOrderReadRepository, CompletedOrderReadRepository>();
             services.AddScoped<ICompletedOrderWriteRepository, CompletedOrderWriteRepository>();
+            //entity services
 
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IProductService, ProductService>();
         }
     }
 }

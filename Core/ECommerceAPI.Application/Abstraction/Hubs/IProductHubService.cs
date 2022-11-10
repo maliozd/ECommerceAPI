@@ -9,5 +9,6 @@ namespace ECommerceAPI.Application.Abstraction.Hubs
     public interface IProductHubService
     {
         Task ProductAddedMessageAsync(string message);
+        Task ProductRemovedMessageAsync(string message);
     }
 }

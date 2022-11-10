@@ -1,11 +1,6 @@
 ﻿using ECommerceAPI.Application.Abstraction.Hubs;
 using ECommerceAPI.SignalR.Hubs;
 using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerceAPI.SignalR.HubServices
 {
@@ -20,6 +15,11 @@ namespace ECommerceAPI.SignalR.HubServices
         public async Task ProductAddedMessageAsync(string message)
         {
            await _hubContext.Clients.All.SendAsync(ReceiveFunctionNames.ProductAddedMessage,message);
+        }
+
+        public async Task ProductRemovedMessageAsync(string message)
+        {
+            await _hubContext.Clients.All.SendAsync(ReceiveFunctionNames.ProductRemovedMessage,message);
         }
     }
 }

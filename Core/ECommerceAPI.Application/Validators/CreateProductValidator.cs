@@ -1,5 +1,4 @@
 ﻿using ECommerceAPI.Application.Features.Commands.Product.CreateProduct;
-using ECommerceAPI.Application.ViewModels.Products;
 using FluentValidation;
 
 namespace ECommerceAPI.Application.Validators

@@ -1,36 +1,29 @@
-﻿using ECommerceAPI.Application.Abstraction.Hubs;
-using ECommerceAPI.Application.Repositories;
+﻿using ECommerceAPI.Application.Abstraction.Services.Product;
 using MediatR;
 
 namespace ECommerceAPI.Application.Features.Commands.Product.CreateProduct
 {
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest, CreateProductCommandResponse>
     {
-        IProductWriteRepository _productWriteRepository;
-        IProductHubService _productHubService;
-        public CreateProductCommandHandler(IProductWriteRepository productWriteRepository, IProductHubService productHubService = null)
+        readonly IProductService _productService;
+
+        public CreateProductCommandHandler(IProductService productService)
         {
-            _productWriteRepository = productWriteRepository;
-            _productHubService = productHubService;
+            _productService = productService;
         }
+
         public async Task<CreateProductCommandResponse> Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
         {
-            await _productWriteRepository.AddAsync(new()
+            var serviceResponse = await _productService.CreateProductAsync(new()
             {
-                Name = request.Name,
+                Price = request.Price,
                 Stock = request.Stock,
-                Price = request.Price
+                Name = request.Name,
             });
-            var response = await _productWriteRepository.SaveAsync();
-            if (response > 0)
+            return new()
             {
-                await _productHubService.ProductAddedMessageAsync($"{request.Name} successfully added. --Sent by SignalR--");
-                return new()
-                {
-                    Success = true
-                };
-            }
-            return new() { Success = false };
+                Success = serviceResponse == true ? true : false,
+            };
         }
     }
 }
