@@ -9,6 +9,6 @@ namespace ECommerceAPI.Application.Features.Queries.ProductImageFile.GetByIdProd
 {
     public class GetByIdProductImageFileQueryRequest : IRequest<List<GetByIdProductImageFileQueryResponse>>
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
     }
 }

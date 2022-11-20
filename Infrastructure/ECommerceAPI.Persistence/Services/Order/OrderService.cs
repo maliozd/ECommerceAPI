@@ -32,7 +32,7 @@ namespace ECommerceAPI.Persistence.Services.Order
             await _orderWriteRepository.AddAsync(new()
             {
                 Address = createOrderDto.Address,
-                Id = createOrderDto.BasketId,
+                Id = Guid.Parse(createOrderDto.BasketId),
                 Description = createOrderDto.Description,
                 OrderCode = NameService.CreateOrderCode()
             });
@@ -65,7 +65,7 @@ namespace ECommerceAPI.Persistence.Services.Order
                 TotalOrderCount = await query.CountAsync(),
                 Orders = await data2.Select(o => new
                 {
-                    Id = o.Id,
+                    Id = o.Id.ToString(),
                     CreatedDate = o.CreatedDate,
                     OrderCode = o.OrderCode,
                     TotalPrice = o.Basket.BasketItems.Sum(bi => bi.Product.Price * bi.Quantity),
@@ -76,14 +76,14 @@ namespace ECommerceAPI.Persistence.Services.Order
 
         }
 
-        public async Task<bool> DeleteOrderAsync(int id)
+        public async Task<bool> DeleteOrderAsync(string id)
         {
             await _orderWriteRepository.Remove(id);           
             var result = await _orderWriteRepository.SaveAsync();
             return result > 1 ? true : false;
         }
 
-        public async Task<SingleOrder> GetOrderByIdAsync(int id)
+        public async Task<SingleOrder> GetOrderByIdAsync(string id)
         {
             var query =  _orderReadRepository.Table.
                 Include(o => o.Basket).
@@ -103,11 +103,11 @@ namespace ECommerceAPI.Persistence.Services.Order
                              isCompleted = _com == null ? false : true,
                              Address = order.Address,
                              Description = order.Description
-                         }).FirstOrDefaultAsync(o => o.Id == id);
+                         }).FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
                                      
             return new()
             {
-                Id = queryObject.Id,
+                Id = queryObject.Id.ToString(),
                 BasketItems = queryObject.Basket.BasketItems.Select(bi => new
                 {
                     bi.Product.Name,
@@ -122,7 +122,7 @@ namespace ECommerceAPI.Persistence.Services.Order
             };
         }
 
-        public async Task<bool> CompleteOrderAsync(int id)
+        public async Task<bool> CompleteOrderAsync(string id)
         {
             ECommerceAPI.Domain.Entities.Order order = await _orderReadRepository.GetByIdAsync(id);
             if (order == null)
@@ -130,7 +130,7 @@ namespace ECommerceAPI.Persistence.Services.Order
 
             await _completedOrderWriteRepository.AddAsync(new()
             {
-                OrderId = id
+                OrderId = Guid.Parse(id)
             });
             var result = await _completedOrderWriteRepository.SaveAsync();
             return result == 1 ? true : false;

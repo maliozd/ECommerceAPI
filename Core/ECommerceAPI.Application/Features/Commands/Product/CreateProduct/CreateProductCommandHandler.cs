@@ -16,6 +16,7 @@ namespace ECommerceAPI.Application.Features.Commands.Product.CreateProduct
         {
             var serviceResponse = await _productService.CreateProductAsync(new()
             {
+                
                 Price = request.Price,
                 Stock = request.Stock,
                 Name = request.Name,

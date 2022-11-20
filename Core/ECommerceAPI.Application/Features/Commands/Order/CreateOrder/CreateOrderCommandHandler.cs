@@ -30,7 +30,7 @@ namespace ECommerceAPI.Application.Features.Commands.Order.CreateOrder
             {
                 Address = request.Address,
                 Description = request.Description,
-                BasketId = _basketService.UserActiveBasket.Id
+                BasketId = _basketService.UserActiveBasket.Id.ToString()
             });
             await _orderHubService.OrderCreatedMessageAsync("New order created!");
             return new();

@@ -9,7 +9,7 @@ namespace ECommerceAPI.Application.Features.Commands.Product.ProductImageFile.Ch
 {
     public class ChangeShowcaseImageCommandRequest : IRequest<ChangeShowcaseImageCommandResponse>
     {
-        public int ImageId { get; set; }
-        public int ProductId { get; set; }
+        public string ImageId { get; set; }
+        public string ProductId { get; set; }
     }
 }

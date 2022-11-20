@@ -1,4 +1,4 @@
-﻿using ECommerceAPI.Application.Abstraction.Services;
+﻿using ECommerceAPI.Application.Abstraction.Services.User;
 using ECommerceAPI.Application.Dtos.User;
 using ECommerceAPI.Application.Exceptions;
 using MediatR;

@@ -2,7 +2,10 @@
 using ECommerceAPI.Application.Features.Commands.AppUser.CreateUser;
 using ECommerceAPI.Application.Features.Commands.AppUser.GoogleLogin;
 using ECommerceAPI.Application.Features.Commands.AppUser.LoginUser;
+using ECommerceAPI.Application.Features.Queries.User.GetUserInfo;
+using ECommerceAPI.Infrastructure.Filters;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +27,16 @@ namespace ECommerceAPI.API.Controllers
         {
             var response = await _mediator.Send(createUserCommandRequest);
             return Ok(response);
-        }        
+        }
+        [HttpPost("{action}")]
+        [Authorize(AuthenticationSchemes = "Admin")]
+        //[UsernameBindActionFilter]
+        public async Task<IActionResult> GetUserInfo(GetUserInfoQueryRequest getUserInfoQueryRequest)
+        {
+            getUserInfoQueryRequest.Username = Request.HttpContext.User.Identity.Name;
+            var response = await _mediator.Send(getUserInfoQueryRequest);
+            return Ok(response);
+        }
 
     }
 }

@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace ECommerceAPI.Domain.Entities
 {
-    public class CompletedOrder : BaseEntity
+    public class Category : BaseEntity
     {
-        public Guid OrderId { get; set; }
-
-        public Order Order { get; set; }
+        public string Name { get; set; }
     }
 }

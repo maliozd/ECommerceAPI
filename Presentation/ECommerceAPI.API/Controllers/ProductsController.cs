@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Application.Abstraction.Storage;
+﻿using ECommerceAPI.Application.Abstraction.Services.User;
+using ECommerceAPI.Application.Abstraction.Storage;
 using ECommerceAPI.Application.Features.Commands.Product.CreateProduct;
 using ECommerceAPI.Application.Features.Commands.Product.DeleteProduct;
 using ECommerceAPI.Application.Features.Commands.Product.ProductImageFile.ChangeShowcaseImage;
@@ -11,28 +12,33 @@ using ECommerceAPI.Application.Features.Queries.ProductImageFile.GetByIdProductI
 using ECommerceAPI.Application.Repositories;
 using ECommerceAPI.Application.Repositories.ProductImageFileRepository;
 using ECommerceAPI.Domain.Entities;
+using ECommerceAPI.Infrastructure.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ECommerceAPI.API.Controllers
 {//TEST
     [Route("api/[controller]")]
     [ApiController]
+
     public class ProductsController : ControllerBase
     {
         readonly IMediator _mediator;
         readonly IHttpContextAccessor httpContextAccessor;
-        public ProductsController(IMediator mediator, IHttpContextAccessor httpContextAccessor)
+        readonly ICurrentUserService _currentUserService;
+        public ProductsController(IMediator mediator, IHttpContextAccessor httpContextAccessor, ICurrentUserService currentUserService)
         {
             _mediator = mediator;
             this.httpContextAccessor = httpContextAccessor;
+            _currentUserService = currentUserService;
         }
+
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllProductQueryRequest getAllProductQueryRequest)//paginator --> page / size queryden gelecek
         {
-            var username = httpContextAccessor.HttpContext.User.Identity.Name;
             var response = await _mediator.Send(getAllProductQueryRequest);
             return Ok(response);
         }
@@ -44,10 +50,11 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = "Admin")] 
+        [Authorize(AuthenticationSchemes = "Admin")] //status code 401 --> unauthorized
 
         public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest)
         {
+            
             var response = await _mediator.Send(createProductCommandRequest);
             //return StatusCode((int)HttpStatusCode.Created); //örnek
             return Ok(response);
@@ -87,7 +94,9 @@ namespace ECommerceAPI.API.Controllers
             return Ok(response);
         }
         [HttpDelete("[action]/{Id}")] //imageId queryStringden, productId routedan gelecek.
-        public async Task<IActionResult> DeleteProductImage([FromRoute] DeleteProductImageCommandRequest deleteProductImageCommandRequest, [FromQuery] int imageId)
+        [Authorize(AuthenticationSchemes = "Admin")] //status code 401 --> unauthorized
+
+        public async Task<IActionResult> DeleteProductImage([FromRoute] DeleteProductImageCommandRequest deleteProductImageCommandRequest, [FromQuery] string imageId)
         {
             deleteProductImageCommandRequest.ImageId = imageId;
             var response = await _mediator.Send(deleteProductImageCommandRequest);

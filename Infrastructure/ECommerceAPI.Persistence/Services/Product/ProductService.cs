@@ -30,6 +30,7 @@ namespace ECommerceAPI.Persistence.Services.Product
         {
             await _productWriteRepository.AddAsync(new()
             {
+                Id = Guid.NewGuid(),
                 Name = productDto.Name,
                 Stock = productDto.Stock,
                 Price = productDto.Price
@@ -43,11 +44,12 @@ namespace ECommerceAPI.Persistence.Services.Product
             else
                 return false;
         }
-        public async Task<bool> DeleteProductAsync(int id)
+        public async Task<bool> DeleteProductAsync(string id)
         {
             await _productWriteRepository.Remove(id);
-            var response = await _productWriteRepository.SaveAsync();
             var productName = (await _productReadRepository.GetByIdAsync(id)).Name;
+
+            var response = await _productWriteRepository.SaveAsync();
             if (response > 0)
             {
                 await _productHubService.ProductRemovedMessageAsync($"{productName} successfully removed from database. --Sent by SignalR--");
@@ -65,7 +67,7 @@ namespace ECommerceAPI.Persistence.Services.Product
             var response = await _productWriteRepository.SaveAsync();
             return response > 0 ? true : false;
         }
-        public async Task<bool> UploadProductImageFileAsync(int productId, IFormFileCollection files)
+        public async Task<bool> UploadProductImageFileAsync(string productId, IFormFileCollection files)
         {
             List<(string fileName, string pathOrContainer)> result = await _storageService.UploadAsync("photo-images", files);
             var product = await _productReadRepository.GetByIdAsync(productId);
@@ -82,10 +84,10 @@ namespace ECommerceAPI.Persistence.Services.Product
             var response = await _productImageFileWriteRepository.SaveAsync();
             return response > 0 ? true : false;
         }
-        public async Task<bool> DeleteProductImageFileAsync(int productId, int imageId)
+        public async Task<bool> DeleteProductImageFileAsync(string productId, string imageId)
         {
-            Domain.Entities.Product? product = await _productReadRepository.Table.Include(p => p.ProductImageFiles).FirstOrDefaultAsync(x => x.Id == productId);
-            ProductImageFile? productImageFile = product?.ProductImageFiles?.FirstOrDefault(pif => pif.Id == imageId);
+            Domain.Entities.Product? product = await _productReadRepository.Table.Include(p => p.ProductImageFiles).FirstOrDefaultAsync(x => x.Id == Guid.Parse(productId));
+            ProductImageFile? productImageFile = product?.ProductImageFiles?.FirstOrDefault(pif => pif.Id == Guid.Parse(imageId));
             if (productImageFile != null)
             {
                 product.ProductImageFiles.Remove(productImageFile);
@@ -97,15 +99,15 @@ namespace ECommerceAPI.Persistence.Services.Product
                 return false;
         }
 
-        public async Task<bool> ChangeProductImageShowcaseImageAsync(int productId, int imageId)
+        public async Task<bool> ChangeProductImageShowcaseImageAsync(string productId, string imageId)
         {
-            var product = await _productReadRepository.Table.Include(x => x.ProductImageFiles).FirstOrDefaultAsync(x => x.Id == productId);
+            var product = await _productReadRepository.Table.Include(x => x.ProductImageFiles).FirstOrDefaultAsync(x => x.Id == Guid.Parse(productId));
             var images = product?.ProductImageFiles;
             foreach (var image in images)
             {
                 if (image.Showcase == true)
                     image.Showcase = false;
-                if (image.Id == imageId)
+                if (image.Id == Guid.Parse(imageId))
                     image.Showcase = true;
             }
             await _productImageFileWriteRepository.SaveAsync();

@@ -4,6 +4,6 @@ namespace ECommerceAPI.Application.Features.Queries.Order.GetByIdOrder
 {
     public class GetByIdOrderQueryRequest : IRequest<GetByIdOrderQueryResponse>
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
     }
 }

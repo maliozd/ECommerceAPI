@@ -16,10 +16,13 @@ namespace ECommerceAPI.API.Controllers
     public class BasketsController : ControllerBase
     {
         readonly IMediator _mediator;
+        readonly IHttpContextAccessor httpContextAccessor;
 
-        public BasketsController(IMediator mediator, ILogger<BasketsController> logger)
+
+        public BasketsController(IMediator mediator, ILogger<BasketsController> logger, IHttpContextAccessor httpContextAccessor)
         {
             _mediator = mediator;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
@@ -27,7 +30,6 @@ namespace ECommerceAPI.API.Controllers
         {
             List<GetBasketItemsQueryResponse> response = await _mediator.Send(request);
             return Ok(response);
-
         }
 
         [HttpPost]

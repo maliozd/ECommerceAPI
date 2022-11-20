@@ -3,11 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ECommerceAPI.Domain.Entities.Common
 {
-    public class BaseEntity
+    public abstract class BaseEntity
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public DateTime? CreatedDate { get; set; }
         virtual public DateTime? UpdatedDate { get; set; } 
     }

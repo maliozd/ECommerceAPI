@@ -9,7 +9,7 @@ namespace ECommerceAPI.Application.Features.Commands.Basket.AddItemToBasket
 {
     public class AddItemToBasketCommandRequest : IRequest<AddItemToBasketCommandResponse>
     {
-        public int ProductId { get; set; }
+        public string ProductId { get; set; }
         public int Quantity { get; set; }
     }
     public class AddItemToBasketCommandResponse

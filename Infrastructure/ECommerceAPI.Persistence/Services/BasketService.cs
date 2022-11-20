@@ -1,18 +1,13 @@
 ﻿using ECommerceAPI.Application.Abstraction.Repositories.BasketItemRepository;
 using ECommerceAPI.Application.Abstraction.Repositories.BasketRepository;
 using ECommerceAPI.Application.Abstraction.Services.Basket;
+using ECommerceAPI.Application.Dtos.BasketItems;
 using ECommerceAPI.Application.Repositories;
-using ECommerceAPI.Application.ViewModels.Baskets;
 using ECommerceAPI.Domain.Entities.BasketEntities;
 using ECommerceAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerceAPI.Persistence.Services
 {
@@ -52,6 +47,7 @@ namespace ECommerceAPI.Persistence.Services
             if (!string.IsNullOrEmpty(username))
             {
                 AppUser? appUser = await _userManager.Users.Include(u => u.Baskets).FirstOrDefaultAsync(u => u.UserName == username);
+                
                 var _basket = from basket in appUser.Baskets
                               join order in _orderReadRepository.Table
                               on basket.Id equals order.Id into basketOrder
@@ -78,19 +74,19 @@ namespace ECommerceAPI.Persistence.Services
             throw new Exception("User not found");
         }
 
-        public async Task AddItemAsync(VM_Create_BasketItem basketItem)
+        public async Task AddItemAsync(CreateBasketItemDto basketItem)
         {
             Basket basket = await GetUserBasketAsync();
             if (basket != null)
             {
-                BasketItem _basketItem = await _basketItemReadRepository.GetSingleAsync(bi => bi.BasketId == basket.Id && bi.ProductId == basketItem.ProductId);
+                BasketItem _basketItem = await _basketItemReadRepository.GetSingleAsync(bi => bi.BasketId == basket.Id && bi.ProductId == Guid.Parse(basketItem.ProductId));
                 if (_basketItem != null)
                     _basketItem.Quantity++;
                 else
                     await _basketItemWriteRepository.AddAsync(new()
                     {
                         BasketId = basket.Id,
-                        ProductId = basketItem.ProductId,
+                        ProductId = Guid.Parse(basketItem.ProductId),
                         Quantity = basketItem.Quantity
                     });
                 await _basketItemWriteRepository.SaveAsync();
@@ -108,7 +104,7 @@ namespace ECommerceAPI.Persistence.Services
             return result.BasketItems.ToList();
         }
 
-        public async Task RemoveItemAsync(int basketItemId)
+        public async Task RemoveItemAsync(string basketItemId)
         {
             BasketItem basketItem = await _basketItemReadRepository.GetByIdAsync(basketItemId);
             if (basketItem != null)
@@ -118,7 +114,7 @@ namespace ECommerceAPI.Persistence.Services
             }
         }
 
-        public async Task UpdateQuantityAsync(VM_Update_BasketItem basketItem)
+        public async Task UpdateQuantityAsync(UpdateBasketItemDto basketItem)
         {
             var targetBasketItem = await _basketItemReadRepository.GetByIdAsync(basketItem.BasketItemId);
             if (targetBasketItem != null)

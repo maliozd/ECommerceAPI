@@ -40,24 +40,26 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new()
         {
-            ValidateAudience = true, //Olusturulacak token deðerini kimlerin/hangi originlerin/sitelerin kullanacaðýný belirlediðimiz deðerdir. -> www.random.com
-            ValidateIssuer = true, //Olusturulacak token deðerini kimin daðýttýðýný ifade edeceðimiz alandýr. -> www.myapi.com -> bu proje
+            ValidateAudience = true, //Olusturulacak token deðerini kimlerin/hangi originlerin/sitelerin kullanacaðýný belirlediðimiz deðer. -> www.random.com
+            ValidateIssuer = true, //Olusturulacak token deðerini kimin daðýttýðýný ifade edeceðimiz alan. -> www.myapi.com -> bu proje
             ValidateLifetime = true, //Olusturulan token deðerinin süresini kontrol edecek olan doðrulama
             ValidateIssuerSigningKey = true, //Üretilecek token deðerinin uygulamamýza ait bir deðer olduðunu ifade eden security key verisinin doðrulanmasý.--> simetrik key -- uygulamaya özel unique key
-
+          
+            
             ValidAudience = builder.Configuration["Token:Audience"],
             ValidIssuer = builder.Configuration["Token:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"])),//byte
             LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false, //lifetameValidator delegatedir. deðiþkenler temsili
-            NameClaimType = ClaimTypes.Name
+            NameClaimType = ClaimTypes.Name           
+            
         };
     });
 
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
 
-builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>()).AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>()).ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>());
+//builder.Services.AddControllers();
 //builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
 builder.Services.AddHttpLogging(logging =>
 {
@@ -92,7 +94,7 @@ Logger logger = new LoggerConfiguration()
      })
     .Enrich.FromLogContext()
     //.Enrich.With<CustomUserNameColumn>()
-    .MinimumLevel.Information()
+    .MinimumLevel.Debug()
     .CreateLogger();
 
 builder.Host.UseSerilog(logger);
@@ -122,8 +124,14 @@ app.UseCors();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-app.UseMiddleware<LogUserNameMiddleware>();
+//app.UseMiddleware<LogUserNameMiddleware>();
 app.UseAuthorization();
+app.Use(async (context, next) =>
+{
+    var username = context.User?.Identity?.IsAuthenticated != null || true ? context.User.Identity.Name : null;
+    LogContext.PushProperty("user_name", username);
+    await next();
+});
 
 
 //app.Use(async (context, next) =>

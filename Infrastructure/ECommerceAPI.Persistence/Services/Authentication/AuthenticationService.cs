@@ -1,5 +1,5 @@
-﻿using ECommerceAPI.Application.Abstraction.Services;
-using ECommerceAPI.Application.Abstraction.Services.Authentication;
+﻿using ECommerceAPI.Application.Abstraction.Services.Authentication;
+using ECommerceAPI.Application.Abstraction.Services.User;
 using ECommerceAPI.Application.Abstraction.Token;
 using ECommerceAPI.Application.Dtos;
 using ECommerceAPI.Application.Exceptions;

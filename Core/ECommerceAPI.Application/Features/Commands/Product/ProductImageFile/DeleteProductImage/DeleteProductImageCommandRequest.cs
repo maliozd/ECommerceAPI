@@ -4,7 +4,7 @@ namespace ECommerceAPI.Application.Features.Commands.Product.ProductImageFile.De
 {
     public class DeleteProductImageCommandRequest : IRequest<DeleteProductImageCommandResponse>
     {
-        public int Id { get; set; }
-        public int ImageId { get; set; }
+        public string Id { get; set; }
+        public string? ImageId { get; set; }
     }
 }

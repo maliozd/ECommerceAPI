@@ -29,14 +29,13 @@ namespace ECommerceAPI.Persistence.Repositories
             var data = Table.AsQueryable();
             return data;
         }
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(string id)
         {
-            //var data = Table.AsQueryable();
-            //{
-            //    data.AsNoTracking();
-            //}
-            return await Table.FindAsync(id);
-        }
+          var data = await Table.FindAsync(Guid.Parse(id));
+            if (data != null)
+                return data;
+            throw new Exception("Not found");
+        }      
         public async Task<T> GetSingleAsync(Expression<Func<T, bool>> expression)
         {
             var query = Table.AsQueryable();

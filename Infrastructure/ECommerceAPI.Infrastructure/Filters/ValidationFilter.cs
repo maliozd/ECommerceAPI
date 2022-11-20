@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ECommerceAPI.Application.ObjectResults;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
@@ -19,7 +21,8 @@ namespace ECommerceAPI.Infrastructure.Filters
                     ToDictionary(E => E.Key, x => x.Value.Errors.
                     Select(e => e.ErrorMessage)).ToArray();
 
-                context.Result = new BadRequestObjectResult(errors);
+                context.Result = new InvalidModelStateValidationObjectResult(errors);
+               
                 return; //? bir sonraki filtera geçmemesi için?
             }
             await next();

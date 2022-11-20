@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerceAPI.Application.ViewModels.Baskets
+namespace ECommerceAPI.Application.Dtos.BasketItems
 {
-    public class VM_Create_BasketItem
+    public class CreateBasketItemDto
     {
-        public int ProductId { get; set; }
+        public string ProductId { get; set; }
         public int Quantity { get; set; }
     }
 }

@@ -27,6 +27,9 @@ namespace ECommerceAPI.Persistence.Contexts
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
         public DbSet<CompletedOrder> CompletedOrders { get; set; }
+        
+        public DbSet<Category> Categories { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -35,15 +38,16 @@ namespace ECommerceAPI.Persistence.Contexts
                 IsUnique();
 
             builder.Entity<Order>()
-               .HasOne(o => o.CompletedOrder)
-               .WithOne(c => c.Order)
-               .HasForeignKey<CompletedOrder>(c => c.OrderId);
+                .HasOne(o => o.CompletedOrder)
+                .WithOne(c => c.Order)
+                .HasForeignKey<CompletedOrder>(c => c.OrderId);
 
 
             builder.Entity<Basket>().
                 HasOne(b => b.Order).
                 WithOne(o => o.Basket).
                 HasForeignKey<Order>(b => b.Id);
+
 
             base.OnModelCreating(builder);
         }

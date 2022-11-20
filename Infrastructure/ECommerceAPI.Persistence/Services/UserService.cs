@@ -1,18 +1,23 @@
-﻿using ECommerceAPI.Application.Abstraction.Services;
+﻿using ECommerceAPI.Application.Abstraction.Services.User;
 using ECommerceAPI.Application.Abstraction.Token;
 using ECommerceAPI.Application.Dtos.User;
 using ECommerceAPI.Application.Exceptions;
+using ECommerceAPI.Application.Features.Queries.User.GetUserInfo;
 using ECommerceAPI.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceAPI.Persistence.Services
 {
     public class UserService : IUserService
     {
         readonly UserManager<AppUser> _userManager;
-        public UserService(UserManager<AppUser> userManager)
+        readonly IHttpContextAccessor _httpContextAccessor;
+        public UserService(UserManager<AppUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<CreateUserResponseDTO> CreateAsync(CreateUserDTO createUserDTO)
         {
@@ -38,7 +43,27 @@ namespace ECommerceAPI.Persistence.Services
             return response;
         }
 
-        public async Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, DateTime accessTokenExpirationDate,int addMinuteOnAccessToken)
+        public async Task<GetUserInfoQueryResponse> GetUserInfoAsync(string userName)
+        {
+            AppUser user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                throw new NotFoundUserException();
+            }
+            return new()
+            {
+                Address = user.Address,
+                Email = user.Email,
+                IsEmailConfirmed = user.EmailConfirmed,
+                IsPhoneNumberConfirmed = user.PhoneNumberConfirmed,
+                IsTwoFactorEnabled = user.TwoFactorEnabled,
+                NameSurname = user.NameSurname,
+                PhoneNumber = user.PhoneNumber,
+                Username = user.UserName,
+            };
+        }
+
+        public async Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, DateTime accessTokenExpirationDate, int addMinuteOnAccessToken)
         {
             if (user == null)
             {

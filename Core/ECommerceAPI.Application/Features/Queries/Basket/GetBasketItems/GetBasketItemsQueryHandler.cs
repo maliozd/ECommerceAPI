@@ -29,7 +29,7 @@ namespace ECommerceAPI.Application.Features.Queries.Basket.GetBasketItems
             var items = await _basketService.GetBasketItemsAsync();
             return items.Select(item => new GetBasketItemsQueryResponse
             {
-                BasketItemId = item.Id,
+                BasketItemId = item.Id.ToString(),
                 Name = item.Product.Name,
                 Price = item.Product.Price,
                 Quantity = item.Quantity,

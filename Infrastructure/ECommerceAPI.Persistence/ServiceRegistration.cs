@@ -1,11 +1,11 @@
 ﻿using ECommerceAPI.Application.Abstraction.Repositories.BasketItemRepository;
 using ECommerceAPI.Application.Abstraction.Repositories.BasketRepository;
 using ECommerceAPI.Application.Abstraction.Repositories.CompletedOrderRepository;
-using ECommerceAPI.Application.Abstraction.Services;
 using ECommerceAPI.Application.Abstraction.Services.Authentication;
 using ECommerceAPI.Application.Abstraction.Services.Basket;
 using ECommerceAPI.Application.Abstraction.Services.Order;
 using ECommerceAPI.Application.Abstraction.Services.Product;
+using ECommerceAPI.Application.Abstraction.Services.User;
 using ECommerceAPI.Application.Repositories;
 using ECommerceAPI.Application.Repositories.CustomerRepository;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepository;

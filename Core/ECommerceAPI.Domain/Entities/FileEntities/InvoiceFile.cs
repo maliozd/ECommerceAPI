@@ -8,6 +8,6 @@ namespace ECommerceAPI.Domain.Entities
 {
     public class InvoiceFile: BaseFile
     {
-        public decimal Price { get; set; }
+        public int Price { get; set; }
     }
 }

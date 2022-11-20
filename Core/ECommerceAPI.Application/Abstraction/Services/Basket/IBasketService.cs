@@ -1,4 +1,4 @@
-﻿using ECommerceAPI.Application.ViewModels.Baskets;
+﻿using ECommerceAPI.Application.Dtos.BasketItems;
 using ECommerceAPI.Domain.Entities.BasketEntities;
 
 namespace ECommerceAPI.Application.Abstraction.Services.Basket
@@ -6,9 +6,9 @@ namespace ECommerceAPI.Application.Abstraction.Services.Basket
     public interface IBasketService
     {
         Task<List<BasketItem>> GetBasketItemsAsync();
-        Task AddItemAsync(VM_Create_BasketItem basketItem);
-        Task UpdateQuantityAsync(VM_Update_BasketItem basketItem);
-        Task RemoveItemAsync(int basketItemId);
+        Task AddItemAsync(CreateBasketItemDto basketItem);
+        Task UpdateQuantityAsync(UpdateBasketItemDto basketItem);
+        Task RemoveItemAsync(string basketItemId);
         ECommerceAPI.Domain.Entities.BasketEntities.Basket? UserActiveBasket { get; }
     }
 }

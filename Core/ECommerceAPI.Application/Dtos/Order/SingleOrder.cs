@@ -12,7 +12,7 @@ namespace ECommerceAPI.Application.Dtos.Order
         public object BasketItems { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string Description { get; set; }
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string OrderCode { get; set; }
         public bool isCompleted { get; set; }
     }

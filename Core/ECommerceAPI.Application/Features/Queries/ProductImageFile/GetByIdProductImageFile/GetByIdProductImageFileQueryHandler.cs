@@ -25,13 +25,13 @@ namespace ECommerceAPI.Application.Features.Queries.ProductImageFile.GetByIdProd
         public async Task<List<GetByIdProductImageFileQueryResponse>> Handle(GetByIdProductImageFileQueryRequest request, CancellationToken cancellationToken)
         {
             Domain.Entities.Product? product = await _productReadRepository.Table.Include(p => p.ProductImageFiles)
-                              .FirstOrDefaultAsync(p => p.Id == request.Id);
+                              .FirstOrDefaultAsync(p => p.Id == Guid.Parse(request.Id));
 
             if (product?.ProductImageFiles.Count > 0)
             {
                 return product.ProductImageFiles.Select(p => new GetByIdProductImageFileQueryResponse
                 {
-                    Id = p.Id,
+                    Id = p.Id.ToString(),
                     Path = $"{configuration["BaseStorageUrl"]}/{p.Path}",
                     FileName = p.FileName,
                     Showcase = p.Showcase,

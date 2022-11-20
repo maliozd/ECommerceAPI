@@ -9,10 +9,10 @@ namespace ECommerceAPI.Domain.Entities.BasketEntities
 {
     public class BasketItem : BaseEntity
     {
-        public int BasketId { get; set; }
-        public Basket Basket { get; set; }
-        public Product Product { get; set; }
-        public int ProductId { get; set; }
+        public Guid BasketId { get; set; }
+        public virtual Basket Basket { get; set; }
+        public virtual Product Product { get; set; }
+        public Guid ProductId { get; set; }
         public int Quantity { get; set; }
     }
 }
