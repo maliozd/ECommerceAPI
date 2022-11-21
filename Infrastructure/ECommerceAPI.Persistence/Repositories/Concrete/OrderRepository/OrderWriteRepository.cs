@@ -11,8 +11,13 @@ namespace ECommerceAPI.Persistence.Repositories.Concrete
 {
     public class OrderWriteRepository : WriteRepository<Order>, IOrderWriteRepository
     {
-        public OrderWriteRepository(APIDbContext context) : base(context)
+        readonly APIDbContext _context;
+
+        public OrderWriteRepository(APIDbContext sendContext) : base(sendContext) 
         {
+            _context = sendContext;
         }
     }
+   
+    
 }

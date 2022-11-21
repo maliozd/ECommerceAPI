@@ -26,8 +26,7 @@ namespace ECommerceAPI.Persistence.Contexts
         public DbSet<BaseFile> Files { get; set; }
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
-        public DbSet<CompletedOrder> CompletedOrders { get; set; }
-        
+        public DbSet<CompletedOrder> CompletedOrders { get; set; }        
         public DbSet<Category> Categories { get; set; }
 
 

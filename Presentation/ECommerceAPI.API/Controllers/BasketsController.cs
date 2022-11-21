@@ -1,4 +1,7 @@
-﻿using ECommerceAPI.Application.Features.Commands.Basket.AddItemToBasket;
+﻿using ECommerceAPI.Application.Constants;
+using ECommerceAPI.Application.CustomAttributes;
+using ECommerceAPI.Application.Enums;
+using ECommerceAPI.Application.Features.Commands.Basket.AddItemToBasket;
 using ECommerceAPI.Application.Features.Commands.Basket.RemoveBasketItem;
 using ECommerceAPI.Application.Features.Commands.Basket.UpdateQuantity;
 using ECommerceAPI.Application.Features.Queries.Basket.GetBasketItems;
@@ -26,6 +29,7 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpGet]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Baskets,ActionType = ActionType.Get,Definiton = "GetBasketItems")]
         public async Task<IActionResult> GetBasketItems([FromQuery]GetBasketItemsQueryRequest request)
         {
             List<GetBasketItemsQueryResponse> response = await _mediator.Send(request);
@@ -33,6 +37,8 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpPost]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Baskets, ActionType = ActionType.Post, Definiton = "AddItemToBasket")]
+
         public async Task<IActionResult> AddItemToBasket(AddItemToBasketCommandRequest request)
         {
             var response = await _mediator.Send(request);
@@ -40,6 +46,8 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpPut]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Baskets, ActionType = ActionType.Update, Definiton = "UpdateQuantity")]
+
         public async Task<IActionResult> UpdateQuantity(UpdateQuantityCommandRequest request)
         {
             var response = await _mediator.Send(request);
@@ -47,6 +55,8 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpDelete("{BasketItemId}")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Baskets, ActionType = ActionType.Delete, Definiton = "RemoveBasketItem")]
+
         public async Task<IActionResult> RemoveBasketItem([FromRoute] RemoveBasketItemCommandRequest request)
         {
             RemoveBasketItemCommandResponse response = await _mediator.Send(request);
