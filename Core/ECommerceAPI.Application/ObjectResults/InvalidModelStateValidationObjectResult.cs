@@ -15,14 +15,11 @@ namespace ECommerceAPI.Application.ObjectResults
     {
         private const int DefaultStatusCode = StatusCodes.Status405MethodNotAllowed;
         //public KeyValuePair<string, IEnumerable<string>>[] Errors { get; set; }
-
         public InvalidModelStateValidationObjectResult([ActionResultObjectValue] object? error)
           : base(error)
         {
             StatusCode = DefaultStatusCode;
-        }
-      
-
+        }    
         public InvalidModelStateValidationObjectResult([ActionResultObjectValue] ModelStateDictionary modelState)
            : base(new SerializableError(modelState))
         {
@@ -33,6 +30,5 @@ namespace ECommerceAPI.Application.ObjectResults
 
             StatusCode = DefaultStatusCode;
         }
-
     }
 }

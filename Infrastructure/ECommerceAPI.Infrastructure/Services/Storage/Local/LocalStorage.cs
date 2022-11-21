@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ECommerceAPI.Infrastructure.Services.Storage.Local
 {
-    public class LocalStorage :  Storage ,ILocalStorage
+    public class LocalStorage : Storage, ILocalStorage
     {
         readonly IWebHostEnvironment _webHostEnvironment;
         public LocalStorage(IWebHostEnvironment webHostEnvironment)
@@ -20,17 +20,17 @@ namespace ECommerceAPI.Infrastructure.Services.Storage.Local
         public List<string> GetFiles(string path)
         {
             DirectoryInfo directoryInfo = new(path);
-            return directoryInfo.GetFiles().Select(f => f.Name).ToList(); 
+            return directoryInfo.GetFiles().Select(f => f.Name).ToList();
         }
 
         public bool HasFile(string path, string fileName)
         {
-           return File.Exists($"{path}//{fileName}");
+            return File.Exists($"{path}//{fileName}");
         }
         private async Task<bool> CopyFileAsync(string path, IFormFile file)
         {
             try
-            {             
+            {
                 using FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024, useAsync: false);
                 //using --> bu fonksiyon son bulduğunda dispose edilir. blok içinde kullanırsan blok bittiğinde dispose edilir.
                 await file.CopyToAsync(fileStream);
@@ -64,7 +64,8 @@ namespace ECommerceAPI.Infrastructure.Services.Storage.Local
             {
                 return data;
             }
-            return null;
+            else
+                return null;
         }
     }
 }

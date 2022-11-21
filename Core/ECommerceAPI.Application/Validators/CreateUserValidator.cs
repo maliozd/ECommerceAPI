@@ -12,7 +12,6 @@ namespace ECommerceAPI.Application.Validators
     {
         public CreateUserValidator()
         {
-
             RuleFor(u => u.Email)
                 .NotNull()
                 .WithMessage("Email can't be empty!")

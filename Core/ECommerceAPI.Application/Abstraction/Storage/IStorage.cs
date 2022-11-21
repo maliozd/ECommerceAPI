@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ECommerceAPI.Application.Abstraction.Storage
 {
-    public interface IStorage              //--> base storage interface
+    public interface IStorage              
     {
         Task<List<(string fileName, string pathOrContainer)>> UploadAsync(string pathOrContainer, IFormFileCollection files);
         Task DeleteAsync(string pathOrContainer, string fileName);
