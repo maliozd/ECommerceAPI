@@ -1,9 +1,11 @@
-﻿using ECommerceAPI.Application.Abstraction.Services.Mail;
+﻿using ECommerceAPI.Application.Abstraction.Services.Configurations;
+using ECommerceAPI.Application.Abstraction.Services.Mail;
 using ECommerceAPI.Application.Abstraction.Services.User;
 using ECommerceAPI.Application.Abstraction.Storage;
 using ECommerceAPI.Application.Abstraction.Token;
 using ECommerceAPI.Infrastructure.Enums;
 using ECommerceAPI.Infrastructure.Services;
+using ECommerceAPI.Infrastructure.Services.Configurations;
 using ECommerceAPI.Infrastructure.Services.CurrentUser;
 using ECommerceAPI.Infrastructure.Services.Mail;
 using ECommerceAPI.Infrastructure.Services.Storage;
@@ -27,6 +29,7 @@ namespace ECommerceAPI.Infrastructure
             serviceCollection.AddScoped<ITokenHandler, TokenHandler>();
             serviceCollection.AddScoped<IMailService, MailService>();
             serviceCollection.AddScoped<ICurrentUserService, CurrentUserService>();
+            serviceCollection.AddScoped<IApplicationService, ApplicationService>();
         }
         public static void AddStorage<T>(this IServiceCollection serviceCollection) where T : Storage, IStorage //T--> IStorage'dan implemente edilmiş nesne / Concrete
         {

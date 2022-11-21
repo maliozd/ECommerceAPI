@@ -1,5 +1,8 @@
 ﻿using ECommerceAPI.Application.Abstraction.Services.User;
 using ECommerceAPI.Application.Abstraction.Storage;
+using ECommerceAPI.Application.Constants;
+using ECommerceAPI.Application.CustomAttributes;
+using ECommerceAPI.Application.Enums;
 using ECommerceAPI.Application.Features.Commands.Product.CreateProduct;
 using ECommerceAPI.Application.Features.Commands.Product.DeleteProduct;
 using ECommerceAPI.Application.Features.Commands.Product.ProductImageFile.ChangeShowcaseImage;
@@ -37,22 +40,22 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] GetAllProductQueryRequest getAllProductQueryRequest)//paginator --> page / size queryden gelecek
+        public async Task<IActionResult> GetAllProducts([FromQuery] GetAllProductQueryRequest getAllProductQueryRequest)//paginator --> page / size queryden gelecek
         {
             var response = await _mediator.Send(getAllProductQueryRequest);
             return Ok(response);
         }
         [HttpGet("{Id}")]
-        public async Task<IActionResult> Get([FromRoute] GetByIdProductRequest getByIdProductRequest)
+        public async Task<IActionResult> GetProductById([FromRoute] GetByIdProductRequest getByIdProductRequest)
         {
             var response = await _mediator.Send(getByIdProductRequest);
             return Ok(response);
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = "Admin")] //status code 401 --> unauthorized
-
-        public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest)
+        [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Post, Definiton = "CreateProduct")]
+        public async Task<IActionResult> CreateProduct(CreateProductCommandRequest createProductCommandRequest)
         {
             
             var response = await _mediator.Send(createProductCommandRequest);
@@ -61,25 +64,25 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = "Admin")] 
-
-        public async Task<IActionResult> Put([FromBody] UpdateProductCommandRequest updateProductCommandRequest) //sent updateRequest with body from client
+        [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Update, Definiton = "UpdateProduct")]
+        public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductCommandRequest updateProductCommandRequest) //sent updateRequest with body from client
         {
             var response = await _mediator.Send(updateProductCommandRequest);
             return Ok(response);
         }
         [HttpDelete("{Id}")]
-        [Authorize(AuthenticationSchemes = "Admin")] 
-
-        public async Task<IActionResult> Delete([FromRoute] DeleteByIdProductCommandRequest deleteByIdProductCommandRequest)
+        [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Delete, Definiton = "DeleteProduct")]
+        public async Task<IActionResult> DeleteProduct([FromRoute] DeleteByIdProductCommandRequest deleteByIdProductCommandRequest)
         {
             var response = await _mediator.Send(deleteByIdProductCommandRequest);
             return Ok(response);
         }
 
         [HttpPost("[action]")]  //http//../api/controller/action
-        [Authorize(AuthenticationSchemes = "Admin")] //status code 401 --> unauthorized
-
+        [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Post, Definiton = "UploadProductImage")]
         public async Task<IActionResult> Upload([FromQuery] UploadProductImageCommandRequest uploadProductImageCommandRequest)
         {
             uploadProductImageCommandRequest.Files = Request.Form.Files;
@@ -88,14 +91,16 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpGet("[action]/{Id}")] //alınacak parametre burdaki gibi routeda belirtilmiyorsa, parametre query stringten gelecektir.
+        [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Get, Definiton = "GetProductImages")]
         public async Task<IActionResult> GetProductImages([FromRoute]GetByIdProductImageFileQueryRequest getByIdProductImageFileQueryRequest)
         {
             var response = await _mediator.Send(getByIdProductImageFileQueryRequest);
             return Ok(response);
         }
         [HttpDelete("[action]/{Id}")] //imageId queryStringden, productId routedan gelecek.
-        [Authorize(AuthenticationSchemes = "Admin")] //status code 401 --> unauthorized
-
+        [Authorize(AuthenticationSchemes = "Admin")] 
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Delete, Definiton = "DeleteProductImage")]
         public async Task<IActionResult> DeleteProductImage([FromRoute] DeleteProductImageCommandRequest deleteProductImageCommandRequest, [FromQuery] string imageId)
         {
             deleteProductImageCommandRequest.ImageId = imageId;
@@ -103,7 +108,9 @@ namespace ECommerceAPI.API.Controllers
             return Ok(response);
         }
         [HttpPut("[action]")]
-        [Authorize(AuthenticationSchemes = "Admin")] 
+        [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Update, Definiton = "ChangeProductImageShowcase")]
+
         public async Task<IActionResult> ChangeProductImageShowcase([FromBody]ChangeShowcaseImageCommandRequest changeShowcaseImageCommandRequest)
         {
            var response = await _mediator.Send(changeShowcaseImageCommandRequest);
