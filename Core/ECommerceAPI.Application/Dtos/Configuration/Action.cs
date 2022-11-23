@@ -11,7 +11,7 @@ namespace ECommerceAPI.Application.Dtos.Configuration
     {
         public string ActionType { get; set; }
         public string HttpType { get; set; }
-        public string Definiton { get; set; }
+        public string Definition { get; set; }
         public string UniqueCode { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace ECommerceAPI.Infrastructure
             serviceCollection.AddScoped<IMailService, MailService>();
             serviceCollection.AddScoped<ICurrentUserService, CurrentUserService>();
             serviceCollection.AddScoped<IApplicationService, ApplicationService>();
-        }
+        } 
         public static void AddStorage<T>(this IServiceCollection serviceCollection) where T : Storage, IStorage //T--> IStorage'dan implemente edilmiş nesne / Concrete
         {
             serviceCollection.AddScoped<IStorage, T>();

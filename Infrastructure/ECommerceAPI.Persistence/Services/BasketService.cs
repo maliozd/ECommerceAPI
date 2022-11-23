@@ -57,6 +57,7 @@ namespace ECommerceAPI.Persistence.Services
                                   basket = basket,
                                   Order = order,
                               };
+
                 Basket? targetBasket = null;
                 if (_basket.Any(b => b.Order is null))  //active basket
                 {

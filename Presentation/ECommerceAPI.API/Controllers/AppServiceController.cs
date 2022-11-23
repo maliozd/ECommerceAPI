@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstraction.Services.Configurations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +7,7 @@ namespace ECommerceAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes ="Admin")]
     public class AppServiceController : ControllerBase
     {
         readonly IApplicationService _applicationService;

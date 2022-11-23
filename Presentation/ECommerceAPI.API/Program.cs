@@ -94,7 +94,7 @@ Logger logger = new LoggerConfiguration()
      })
     .Enrich.FromLogContext()
     //.Enrich.With<CustomUserNameColumn>()
-    .MinimumLevel.Debug()
+    .MinimumLevel.Information()
     .CreateLogger();
 
 builder.Host.UseSerilog(logger);

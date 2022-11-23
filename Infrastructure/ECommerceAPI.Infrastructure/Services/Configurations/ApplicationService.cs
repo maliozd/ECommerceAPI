@@ -42,7 +42,7 @@ namespace ECommerceAPI.Infrastructure.Services.Configurations
                                 Application.Dtos.Configuration.Action _action = new()
                                 {
                                     ActionType = Enum.GetName(typeof(ActionType),authorizeDefAttribute.ActionType),
-                                    Definiton = authorizeDefAttribute.Definiton,
+                                    Definition = authorizeDefAttribute.Definiton,
                                 };
 
                                 var httpAttribute = attributes.FirstOrDefault(a => a.GetType().IsAssignableTo(typeof(HttpMethodAttribute))) as HttpMethodAttribute;
@@ -51,7 +51,7 @@ namespace ECommerceAPI.Infrastructure.Services.Configurations
                                 else
                                     _action.HttpType = HttpMethods.Get;
 
-                                _action.UniqueCode = $"{_action.HttpType}-{_action.ActionType}-{_action.Definiton}";
+                                _action.UniqueCode = $"{_action.HttpType}-{_action.ActionType}-{_action.Definition}";
                                 menu.Actions.Add(_action);
                             }
                         }
