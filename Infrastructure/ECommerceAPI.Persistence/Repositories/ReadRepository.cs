@@ -2,12 +2,7 @@
 using ECommerceAPI.Domain.Entities.Common;
 using ECommerceAPI.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerceAPI.Persistence.Repositories
 {
@@ -18,9 +13,9 @@ namespace ECommerceAPI.Persistence.Repositories
         {
             _context = context;
         }
-       
 
-        public DbSet<T> Table => _context.Set<T>();       
+
+        public DbSet<T> Table => _context.Set<T>();
 
 
 
@@ -29,23 +24,23 @@ namespace ECommerceAPI.Persistence.Repositories
             var data = Table.AsQueryable();
             return data;
         }
-        public async Task<T> GetByIdAsync(string id)
+        public async Task<T> GetByIdAsync(Guid id)
         {
-          var data = await Table.FindAsync(Guid.Parse(id));
+            var data = await Table.FindAsync(id);
             if (data != null)
                 return data;
             throw new Exception("Not found");
-        }      
+        }
         public async Task<T> GetSingleAsync(Expression<Func<T, bool>> expression)
         {
             var query = Table.AsQueryable();
-            
+
             return await query.FirstOrDefaultAsync(expression);
         }
 
         public IQueryable<T> GetWhere(Expression<Func<T, bool>> expression)
-        {                        
-            return Table.Where(expression); 
+        {
+            return Table.Where(expression);
         }
     }
 }

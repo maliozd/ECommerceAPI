@@ -1,15 +1,9 @@
 ﻿using ECommerceAPI.Application.Abstraction.Repositories.CompletedOrderRepository;
 using ECommerceAPI.Application.Abstraction.Services.Order;
 using ECommerceAPI.Application.Dtos.Order;
-using ECommerceAPI.Application.Features.Queries.Order.GetByIdOrder;
 using ECommerceAPI.Application.Repositories;
 using ECommerceAPI.Persistence.Services.Basic;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerceAPI.Persistence.Services.Order
 {
@@ -78,33 +72,33 @@ namespace ECommerceAPI.Persistence.Services.Order
 
         public async Task<bool> DeleteOrderAsync(string id)
         {
-            await _orderWriteRepository.Remove(id);           
+            await _orderWriteRepository.Remove(id);
             var result = await _orderWriteRepository.SaveAsync();
             return result > 1 ? true : false;
         }
 
         public async Task<SingleOrder> GetOrderByIdAsync(string id)
         {
-            var query =  _orderReadRepository.Table.
+            var query = _orderReadRepository.Table.
                 Include(o => o.Basket).
                 ThenInclude(b => b.BasketItems).
                 ThenInclude(bi => bi.Product);
 
             var queryObject = await (from order in query     //anonymous object created from query
-                         join completedOrder in _completedOrderReadRepository.Table
-                          on order.Id equals completedOrder.OrderId into com
-                         from _com in com.DefaultIfEmpty()
-                         select new
-                         {
-                             Id = order.Id,
-                             CreatedDate = order.CreatedDate,
-                             OrderCode = order.OrderCode,
-                             Basket = order.Basket,
-                             isCompleted = _com == null ? false : true,
-                             Address = order.Address,
-                             Description = order.Description
-                         }).FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
-                                     
+                                     join completedOrder in _completedOrderReadRepository.Table
+                                      on order.Id equals completedOrder.OrderId into com
+                                     from _com in com.DefaultIfEmpty()
+                                     select new
+                                     {
+                                         Id = order.Id,
+                                         CreatedDate = order.CreatedDate,
+                                         OrderCode = order.OrderCode,
+                                         Basket = order.Basket,
+                                         isCompleted = _com == null ? false : true,
+                                         Address = order.Address,
+                                         Description = order.Description
+                                     }).FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
+
             return new()
             {
                 Id = queryObject.Id.ToString(),
@@ -124,7 +118,7 @@ namespace ECommerceAPI.Persistence.Services.Order
 
         public async Task<bool> CompleteOrderAsync(string id)
         {
-            ECommerceAPI.Domain.Entities.Order order = await _orderReadRepository.GetByIdAsync(id);
+            ECommerceAPI.Domain.Entities.Order order = await _orderReadRepository.GetByIdAsync(Guid.Parse(id));
             if (order == null)
                 throw new Exception("Order not found");
 

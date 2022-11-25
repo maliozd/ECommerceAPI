@@ -26,7 +26,7 @@ namespace ECommerceAPI.Persistence.Contexts
         public DbSet<BaseFile> Files { get; set; }
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
-        public DbSet<CompletedOrder> CompletedOrders { get; set; }        
+        public DbSet<CompletedOrder> CompletedOrders { get; set; }
         public DbSet<Category> Categories { get; set; }
 
 
@@ -46,7 +46,6 @@ namespace ECommerceAPI.Persistence.Contexts
                 HasOne(b => b.Order).
                 WithOne(o => o.Basket).
                 HasForeignKey<Order>(b => b.Id);
-
 
             base.OnModelCreating(builder);
         }

@@ -1,10 +1,5 @@
 ﻿using ECommerceAPI.Application.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerceAPI.Application.Features.Queries.Product.GetByIdProduct
 {
@@ -18,7 +13,7 @@ namespace ECommerceAPI.Application.Features.Queries.Product.GetByIdProduct
         }
         public async Task<GetByIdProductResponse> Handle(GetByIdProductRequest request, CancellationToken cancellationToken)
         {
-            var data = await _productReadRepository.GetByIdAsync(request.Id);
+            var data = await _productReadRepository.GetByIdAsync(Guid.Parse(request.Id));
             if (data == null)
                 throw new NullReferenceException("Invalid id");
             return new()

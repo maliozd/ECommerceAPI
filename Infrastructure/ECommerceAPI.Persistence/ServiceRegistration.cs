@@ -1,8 +1,10 @@
 ﻿using ECommerceAPI.Application.Abstraction.Repositories.BasketItemRepository;
 using ECommerceAPI.Application.Abstraction.Repositories.BasketRepository;
+using ECommerceAPI.Application.Abstraction.Repositories.CategoryRepository;
 using ECommerceAPI.Application.Abstraction.Repositories.CompletedOrderRepository;
 using ECommerceAPI.Application.Abstraction.Services.Authentication;
 using ECommerceAPI.Application.Abstraction.Services.Basket;
+using ECommerceAPI.Application.Abstraction.Services.Category;
 using ECommerceAPI.Application.Abstraction.Services.Order;
 using ECommerceAPI.Application.Abstraction.Services.Product;
 using ECommerceAPI.Application.Abstraction.Services.User;
@@ -15,10 +17,12 @@ using ECommerceAPI.Persistence.Contexts;
 using ECommerceAPI.Persistence.Repositories.Concrete;
 using ECommerceAPI.Persistence.Repositories.Concrete.BasketItemRepository;
 using ECommerceAPI.Persistence.Repositories.Concrete.BasketRepository;
+using ECommerceAPI.Persistence.Repositories.Concrete.CategoryRepository;
 using ECommerceAPI.Persistence.Repositories.Concrete.CompletedOrderRepository;
 using ECommerceAPI.Persistence.Repositories.Concrete.ProductRepository;
 using ECommerceAPI.Persistence.Services;
 using ECommerceAPI.Persistence.Services.Authentication;
+using ECommerceAPI.Persistence.Services.Category;
 using ECommerceAPI.Persistence.Services.Order;
 using ECommerceAPI.Persistence.Services.Product;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +36,7 @@ namespace ECommerceAPI.Persistence
         {
             services.AddDbContext<APIDbContext>(options => options.UseSqlServer(Configuration.connectionString));
 
-            //identity / userService
+            #region Identity
             services.AddIdentity<AppUser, AppRole>(options =>
             {
                 options.Password.RequiredLength = 3;
@@ -43,8 +47,9 @@ namespace ECommerceAPI.Persistence
             }).AddEntityFrameworkStores<APIDbContext>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            #endregion
 
-            //repositories
+            #region Repositories
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
             _ = services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
 
@@ -69,14 +74,21 @@ namespace ECommerceAPI.Persistence
             services.AddScoped<IBasketWriteRepository, BasketWriteRepository>();
             services.AddScoped<IBasketReadRepository, BasketReadRepository>();
 
-
             services.AddScoped<ICompletedOrderReadRepository, CompletedOrderReadRepository>();
             services.AddScoped<ICompletedOrderWriteRepository, CompletedOrderWriteRepository>();
-            //entity services
+
+            services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
+            services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
+            #endregion
+
+            #region Entity Service
 
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+
+            #endregion
         }
     }
 }

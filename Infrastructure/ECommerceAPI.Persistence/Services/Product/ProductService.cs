@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstraction.Hubs;
+using ECommerceAPI.Application.Abstraction.Services.Category;
 using ECommerceAPI.Application.Abstraction.Services.Product;
 using ECommerceAPI.Application.Abstraction.Storage;
 using ECommerceAPI.Application.Dtos.Product;
@@ -17,15 +18,38 @@ namespace ECommerceAPI.Persistence.Services.Product
         readonly IStorageService _storageService;
         readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
         readonly IProductHubService _productHubService;
+        readonly ICategoryService _categoryService;
 
-        public ProductService(IProductWriteRepository productWriteRepository, IProductHubService productHubService, IProductReadRepository productReadRepository, IStorageService storageService, IProductImageFileWriteRepository productImageFileWriteRepository)
+        public ProductService(IProductWriteRepository productWriteRepository, IProductHubService productHubService, IProductReadRepository productReadRepository, IStorageService storageService, IProductImageFileWriteRepository productImageFileWriteRepository, ICategoryService categoryService)
         {
             _productWriteRepository = productWriteRepository;
             _productHubService = productHubService;
             _productReadRepository = productReadRepository;
             _storageService = storageService;
             _productImageFileWriteRepository = productImageFileWriteRepository;
+            _categoryService = categoryService;
         }
+
+        public async Task<PagedProducts> GetAllProductsPagedAsync(int page, int size)
+        {
+
+            return new()
+            {
+                TotalCount = _productReadRepository.GetAll().Count(),
+                Products = _productReadRepository.GetAll().Include(x => x.ProductImageFiles).Include(x => x.Category).Skip(page * size).Take(size).Select(p => new SingleProduct
+                {
+                    Id = p.Id.ToString(),
+                    Name = p.Name,
+                    Stock = p.Stock,
+                    ProductImageFiles = p.ProductImageFiles,
+                    Category = p.Category.Name,
+                    CreatedDate = p.CreatedDate,
+                    Price = p.Price,
+                    UpdatedDate = p.UpdatedDate
+                }).ToList()
+            };
+        }
+
         public async Task<bool> CreateProductAsync(CreateProductDto productDto)
         {
             await _productWriteRepository.AddAsync(new()
@@ -33,7 +57,8 @@ namespace ECommerceAPI.Persistence.Services.Product
                 Id = Guid.NewGuid(),
                 Name = productDto.Name,
                 Stock = productDto.Stock,
-                Price = productDto.Price
+                Price = productDto.Price,
+                CategoryId = Guid.Parse(productDto.CategoryId)
             });
             var response = await _productWriteRepository.SaveAsync();
             if (response > 0)
@@ -47,7 +72,7 @@ namespace ECommerceAPI.Persistence.Services.Product
         public async Task<bool> DeleteProductAsync(string id)
         {
             await _productWriteRepository.Remove(id);
-            var productName = (await _productReadRepository.GetByIdAsync(id)).Name;
+            var productName = (await _productReadRepository.GetByIdAsync(Guid.Parse(id))).Name;
 
             var response = await _productWriteRepository.SaveAsync();
             if (response > 0)
@@ -60,7 +85,7 @@ namespace ECommerceAPI.Persistence.Services.Product
         }
         public async Task<bool> UpdateProductAsync(UpdateProductDto productDto)
         {
-            var productToUpdate = await _productReadRepository.GetByIdAsync(productDto.Id);
+            var productToUpdate = await _productReadRepository.GetByIdAsync(Guid.Parse(productDto.Id));
             productToUpdate.Name = productDto.Name;
             productToUpdate.Stock = productDto.Stock;
             productToUpdate.Price = productDto.Price;
@@ -70,7 +95,7 @@ namespace ECommerceAPI.Persistence.Services.Product
         public async Task<bool> UploadProductImageFileAsync(string productId, IFormFileCollection files)
         {
             List<(string fileName, string pathOrContainer)> result = await _storageService.UploadAsync("photo-images", files);
-            var product = await _productReadRepository.GetByIdAsync(productId);
+            var product = await _productReadRepository.GetByIdAsync(Guid.Parse(productId));
             await _productImageFileWriteRepository.AddRangeAsync(result.Select(p => new Domain.Entities.FileEntities.ProductImageFile
             {
                 FileName = p.fileName,
@@ -113,5 +138,7 @@ namespace ECommerceAPI.Persistence.Services.Product
             await _productImageFileWriteRepository.SaveAsync();
             return true;
         }
+
+
     }
 }

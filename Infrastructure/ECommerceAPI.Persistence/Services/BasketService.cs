@@ -47,7 +47,7 @@ namespace ECommerceAPI.Persistence.Services
             if (!string.IsNullOrEmpty(username))
             {
                 AppUser? appUser = await _userManager.Users.Include(u => u.Baskets).FirstOrDefaultAsync(u => u.UserName == username);
-                
+
                 var _basket = from basket in appUser.Baskets
                               join order in _orderReadRepository.Table
                               on basket.Id equals order.Id into basketOrder
@@ -107,7 +107,7 @@ namespace ECommerceAPI.Persistence.Services
 
         public async Task RemoveItemAsync(string basketItemId)
         {
-            BasketItem basketItem = await _basketItemReadRepository.GetByIdAsync(basketItemId);
+            BasketItem basketItem = await _basketItemReadRepository.GetByIdAsync(Guid.Parse(basketItemId));
             if (basketItem != null)
             {
                 _basketItemWriteRepository.Remove(basketItem);
@@ -117,7 +117,7 @@ namespace ECommerceAPI.Persistence.Services
 
         public async Task UpdateQuantityAsync(UpdateBasketItemDto basketItem)
         {
-            var targetBasketItem = await _basketItemReadRepository.GetByIdAsync(basketItem.BasketItemId);
+            var targetBasketItem = await _basketItemReadRepository.GetByIdAsync(Guid.Parse(basketItem.BasketItemId));
             if (targetBasketItem != null)
             {
                 targetBasketItem.Quantity = basketItem.Quantity;
