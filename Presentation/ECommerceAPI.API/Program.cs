@@ -1,15 +1,10 @@
-using ECommerceAPI.API.ColumnModel;
 using ECommerceAPI.API.Extensions;
-using ECommerceAPI.API.LoggerConfigurationHandler;
 using ECommerceAPI.Application;
-using ECommerceAPI.Application.Validators;
 using ECommerceAPI.Infrastructure;
 using ECommerceAPI.Infrastructure.Filters;
 using ECommerceAPI.Infrastructure.Services.Storage.Azure;
 using ECommerceAPI.Persistence;
 using ECommerceAPI.SignalR;
-using ECommerceAPI.SignalR.Hubs;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Server.IISIntegration;
@@ -19,7 +14,6 @@ using Serilog;
 using Serilog.Context;
 using Serilog.Core;
 using Serilog.Sinks.MSSqlServer;
-using System.Collections.ObjectModel;
 using System.Security.Claims;
 using System.Text;
 
@@ -44,21 +38,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = true, //Olusturulacak token deðerini kimin daðýttýðýný ifade edeceðimiz alan. -> www.myapi.com -> bu proje
             ValidateLifetime = true, //Olusturulan token deðerinin süresini kontrol edecek olan doðrulama
             ValidateIssuerSigningKey = true, //Üretilecek token deðerinin uygulamamýza ait bir deðer olduðunu ifade eden security key verisinin doðrulanmasý.--> simetrik key -- uygulamaya özel unique key
-          
-            
+
+
             ValidAudience = builder.Configuration["Token:Audience"],
             ValidIssuer = builder.Configuration["Token:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"])),//byte
             LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false, //lifetameValidator delegatedir. deðiþkenler temsili
-            NameClaimType = ClaimTypes.Name           
-            
+            NameClaimType = ClaimTypes.Name
+
         };
     });
 
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
 
-builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>());
+builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>()).AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 //builder.Services.AddControllers();
 //builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
 builder.Services.AddHttpLogging(logging =>

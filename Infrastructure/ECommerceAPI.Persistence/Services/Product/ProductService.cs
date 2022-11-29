@@ -2,6 +2,7 @@
 using ECommerceAPI.Application.Abstraction.Services.Category;
 using ECommerceAPI.Application.Abstraction.Services.Product;
 using ECommerceAPI.Application.Abstraction.Storage;
+using ECommerceAPI.Application.Dtos.Category;
 using ECommerceAPI.Application.Dtos.Product;
 using ECommerceAPI.Application.Repositories;
 using ECommerceAPI.Application.Repositories.ProductImageFileRepository;
@@ -30,25 +31,29 @@ namespace ECommerceAPI.Persistence.Services.Product
             _categoryService = categoryService;
         }
 
-        public async Task<PagedProducts> GetAllProductsPagedAsync(int page, int size)
+        public async Task<PagedProductsDto> GetAllProductsPagedAsync(int page, int size)
         {
-
             return new()
             {
                 TotalCount = _productReadRepository.GetAll().Count(),
-                Products = _productReadRepository.GetAll().Include(x => x.ProductImageFiles).Include(x => x.Category).Skip(page * size).Take(size).Select(p => new SingleProduct
+                Products = _productReadRepository.GetAll().Include(x => x.ProductImageFiles).Include(x => x.Category).Skip(page * size).Take(size).Select(p => new SingleProductDto
                 {
                     Id = p.Id.ToString(),
                     Name = p.Name,
                     Stock = p.Stock,
                     ProductImageFiles = p.ProductImageFiles,
-                    Category = p.Category.Name,
+                    Category = new CategoryIdNameDto
+                    {
+                        Id = p.Category.Id.ToString(),
+                        Name = p.Category.Name
+                    },
                     CreatedDate = p.CreatedDate,
                     Price = p.Price,
                     UpdatedDate = p.UpdatedDate
                 }).ToList()
             };
         }
+
 
         public async Task<bool> CreateProductAsync(CreateProductDto productDto)
         {
@@ -89,6 +94,7 @@ namespace ECommerceAPI.Persistence.Services.Product
             productToUpdate.Name = productDto.Name;
             productToUpdate.Stock = productDto.Stock;
             productToUpdate.Price = productDto.Price;
+            productToUpdate.CategoryId = Guid.Parse(productDto.CategoryId);
             var response = await _productWriteRepository.SaveAsync();
             return response > 0 ? true : false;
         }
@@ -139,6 +145,21 @@ namespace ECommerceAPI.Persistence.Services.Product
             return true;
         }
 
-
+        public async Task<SingleProductDto> GetProductByIdAsync(string productId)
+        {
+            var product = await _productReadRepository.GetByIdAsync(Guid.Parse(productId));
+            var productCategory = await _categoryService.GetCategoryIdNameByIdAsync(product.CategoryId.ToString());
+            return new()
+            {
+                Id = product.Id.ToString(),
+                Stock = product.Stock,
+                Price = product.Price,
+                Name = product.Name,
+                Category = productCategory,
+                CreatedDate = product.CreatedDate,
+                ProductImageFiles = product.ProductImageFiles,
+                UpdatedDate = product.UpdatedDate
+            };
+        }
     }
 }

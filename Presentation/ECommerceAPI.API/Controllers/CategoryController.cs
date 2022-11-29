@@ -18,6 +18,15 @@ namespace ECommerceAPI.API.Controllers
             _mediator = mediator;
             _categoryService = categoryService;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategories([FromQuery] GetAllCategoriesQueryRequest getAllCategoriesQueryRequest)
+        {
+            var response = await _mediator.Send(getAllCategoriesQueryRequest);
+            return Ok(response);
+        }
+
+
         [HttpGet("[action]")]
 
         public async Task<IActionResult> GetMainCategories([FromQuery] GetParentCategoriesQueryRequest getMainCategoriesQueryRequest)
@@ -34,10 +43,10 @@ namespace ECommerceAPI.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("[action]/{CategoryId}")]
+        [HttpGet("{CategoryId}")]
         public async Task<IActionResult> GetById([FromRoute] GetCategoryByIdQueryRequest getCategoryByIdQueryRequest)
         {
-            var category = await _categoryService.GetCategoryByIdAsync(getCategoryByIdQueryRequest.CategoryId);
+            var category = await _categoryService.GetDetailedCategoryByIdAsync(getCategoryByIdQueryRequest.CategoryId);
             return Ok(category);
         }
 

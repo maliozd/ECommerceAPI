@@ -1,5 +1,4 @@
 ﻿using ECommerceAPI.Application.Abstraction.Services.User;
-using ECommerceAPI.Application.Abstraction.Storage;
 using ECommerceAPI.Application.Constants;
 using ECommerceAPI.Application.CustomAttributes;
 using ECommerceAPI.Application.Enums;
@@ -12,15 +11,9 @@ using ECommerceAPI.Application.Features.Commands.UpdateProduct;
 using ECommerceAPI.Application.Features.Queries.Product.GetAllProduct;
 using ECommerceAPI.Application.Features.Queries.Product.GetByIdProduct;
 using ECommerceAPI.Application.Features.Queries.ProductImageFile.GetByIdProductImageFile;
-using ECommerceAPI.Application.Repositories;
-using ECommerceAPI.Application.Repositories.ProductImageFileRepository;
-using ECommerceAPI.Domain.Entities;
-using ECommerceAPI.Infrastructure.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace ECommerceAPI.API.Controllers
 {//TEST
@@ -57,14 +50,14 @@ namespace ECommerceAPI.API.Controllers
         [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Post, Definiton = "CreateProduct")]
         public async Task<IActionResult> CreateProduct(CreateProductCommandRequest createProductCommandRequest)
         {
-            
+
             var response = await _mediator.Send(createProductCommandRequest);
             //return StatusCode((int)HttpStatusCode.Created); //örnek
             return Ok(response);
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = "Admin")]
+        //[Authorize(AuthenticationSchemes = "Admin")]
         [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Update, Definiton = "UpdateProduct")]
         public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductCommandRequest updateProductCommandRequest) //sent updateRequest with body from client
         {
@@ -93,13 +86,13 @@ namespace ECommerceAPI.API.Controllers
         [HttpGet("[action]/{Id}")] //alınacak parametre burdaki gibi routeda belirtilmiyorsa, parametre query stringten gelecektir.
         [Authorize(AuthenticationSchemes = "Admin")]
         [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Get, Definiton = "GetProductImages")]
-        public async Task<IActionResult> GetProductImages([FromRoute]GetByIdProductImageFileQueryRequest getByIdProductImageFileQueryRequest)
+        public async Task<IActionResult> GetProductImages([FromRoute] GetByIdProductImageFileQueryRequest getByIdProductImageFileQueryRequest)
         {
             var response = await _mediator.Send(getByIdProductImageFileQueryRequest);
             return Ok(response);
         }
         [HttpDelete("[action]/{Id}")] //imageId queryStringden, productId routedan gelecek.
-        [Authorize(AuthenticationSchemes = "Admin")] 
+        [Authorize(AuthenticationSchemes = "Admin")]
         [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Delete, Definiton = "DeleteProductImage")]
         public async Task<IActionResult> DeleteProductImage([FromRoute] DeleteProductImageCommandRequest deleteProductImageCommandRequest, [FromQuery] string imageId)
         {
@@ -111,9 +104,9 @@ namespace ECommerceAPI.API.Controllers
         [Authorize(AuthenticationSchemes = "Admin")]
         [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Update, Definiton = "ChangeProductImageShowcase")]
 
-        public async Task<IActionResult> ChangeProductImageShowcase([FromBody]ChangeShowcaseImageCommandRequest changeShowcaseImageCommandRequest)
+        public async Task<IActionResult> ChangeProductImageShowcase([FromBody] ChangeShowcaseImageCommandRequest changeShowcaseImageCommandRequest)
         {
-           var response = await _mediator.Send(changeShowcaseImageCommandRequest);
+            var response = await _mediator.Send(changeShowcaseImageCommandRequest);
             return Ok(response);
         }
 

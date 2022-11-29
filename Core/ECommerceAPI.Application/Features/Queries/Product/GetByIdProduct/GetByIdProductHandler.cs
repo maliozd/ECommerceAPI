@@ -1,27 +1,21 @@
-﻿using ECommerceAPI.Application.Repositories;
+﻿using ECommerceAPI.Application.Abstraction.Services.Product;
 using MediatR;
 
 namespace ECommerceAPI.Application.Features.Queries.Product.GetByIdProduct
 {
     public class GetByIdProductHandler : IRequestHandler<GetByIdProductRequest, GetByIdProductResponse>
     {
-        readonly IProductReadRepository _productReadRepository;
+        readonly IProductService _productService;
 
-        public GetByIdProductHandler(IProductReadRepository productReadRepository)
+        public GetByIdProductHandler(IProductService productService)
         {
-            _productReadRepository = productReadRepository;
+            _productService = productService;
         }
+
         public async Task<GetByIdProductResponse> Handle(GetByIdProductRequest request, CancellationToken cancellationToken)
         {
-            var data = await _productReadRepository.GetByIdAsync(Guid.Parse(request.Id));
-            if (data == null)
-                throw new NullReferenceException("Invalid id");
-            return new()
-            {
-                Name = data.Name,
-                Stock = data.Stock,
-                Price = data.Price
-            };
+            var data = await _productService.GetProductByIdAsync(request.Id);
+            return new() { Product = data };
         }
     }
 }

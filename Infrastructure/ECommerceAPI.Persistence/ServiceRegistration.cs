@@ -49,7 +49,8 @@ namespace ECommerceAPI.Persistence
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             #endregion
 
-            #region Repositories
+            #region 
+
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
             _ = services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
 

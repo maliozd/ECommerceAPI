@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ECommerceAPI.Application.Dtos.Product;
 
 namespace ECommerceAPI.Application.Features.Queries.Product.GetByIdProduct
 {
     public class GetByIdProductResponse
     {
-        public string Name { get; set; }
-        public int Stock { get; set; }
-        public float Price { get; set; }
+        public SingleProductDto Product { get; set; }
     }
 }

@@ -21,7 +21,36 @@ namespace ECommerceAPI.Persistence.Services.Category
             throw new NotImplementedException();
         }
 
-        public async Task<SingleCategoryDto> GetCategoryByIdAsync(string categoryId)
+        public async Task<PagedCategoriesDto> GetAllCategoriesPagedAsync(int page, int size)
+        {
+            var totalCount = _categoryReadRepository.GetAll().Count();
+            var categories = await _categoryReadRepository.GetAll().Include(c => c.ParentCategory).Include(c => c.ChildCategories).Skip(page * size).Take(size).Select(c => new SingleCategoryDto
+            {
+                Id = c.Id.ToString(),
+                Name = c.Name,
+                ChildCategories = c.ChildCategories.Select(ch => ch.Name).ToList(),
+                ParentCategory = c.ParentCategory.Name,
+                IsParentCategory = c.ParentCategory == null ? true : false
+            }).ToListAsync();
+
+            return new()
+            {
+                TotalCount = totalCount,
+                Categories = categories
+            };
+        }
+
+        public async Task<CategoryIdNameDto> GetCategoryIdNameByIdAsync(string categoryId)
+        {
+            var category = await _categoryReadRepository.Table.Where(c => c.Id == Guid.Parse(categoryId)).Select(c => new CategoryIdNameDto
+            {
+                Id = c.Id.ToString(),
+                Name = c.Name
+            }).FirstOrDefaultAsync();
+            return category;
+        }
+
+        public async Task<SingleCategoryDto> GetDetailedCategoryByIdAsync(string categoryId)
         {
 
             var _category = await _categoryReadRepository.Table.Where(c => c.Id == Guid.Parse(categoryId)).Include(c => c.ParentCategory).Include(c => c.ChildCategories).FirstOrDefaultAsync();

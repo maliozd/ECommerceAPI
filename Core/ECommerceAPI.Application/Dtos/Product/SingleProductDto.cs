@@ -1,8 +1,9 @@
-﻿using ECommerceAPI.Domain.Entities.FileEntities;
+﻿using ECommerceAPI.Application.Dtos.Category;
+using ECommerceAPI.Domain.Entities.FileEntities;
 
 namespace ECommerceAPI.Application.Dtos.Product
 {
-    public class SingleProduct
+    public class SingleProductDto
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -11,6 +12,6 @@ namespace ECommerceAPI.Application.Dtos.Product
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public ICollection<ProductImageFile> ProductImageFiles { get; set; }
-        public string Category { get; set; }
+        public CategoryIdNameDto Category { get; set; }
     }
 }
