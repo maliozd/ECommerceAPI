@@ -14,7 +14,7 @@ namespace ECommerceAPI.Application.Features.Queries.Category.GetAllCategories
 
         public async Task<GetParentCategoriesQueryResponse> Handle(GetParentCategoriesQueryRequest request, CancellationToken cancellationToken)
         {
-            var categories = await _categoryService.GetMainCategoriesAsync();
+            var categories = await _categoryService.GetParentCategoriesAsync();
             return new()
             {
                 Categories = categories,

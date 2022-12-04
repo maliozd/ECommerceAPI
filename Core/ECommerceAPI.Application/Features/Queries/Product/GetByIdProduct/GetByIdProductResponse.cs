@@ -1,9 +1,13 @@
-﻿using ECommerceAPI.Application.Dtos.Product;
+﻿using ECommerceAPI.Application.Dtos.Category;
 
 namespace ECommerceAPI.Application.Features.Queries.Product.GetByIdProduct
 {
     public class GetByIdProductResponse
     {
-        public SingleProductDto Product { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public int Stock { get; set; }
+        public int Price { get; set; }
+        public CategoryIdNameDto Category { get; set; }
     }
 }

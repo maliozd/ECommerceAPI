@@ -6,8 +6,8 @@ namespace ECommerceAPI.Application.Abstraction.Services.Category
     {
         Task<PagedCategoriesDto> GetAllCategoriesPagedAsync(int page, int size);
         Task<bool> AddCategoryAsync();
-        Task<List<CategoryIdNameDto>> GetMainCategoriesAsync();
-        Task<List<CategoryIdNameDto>> GetSubCategoriesByParentIdAsync(string parentCategoryId);
+        Task<List<CategoryIdNameDto>> GetParentCategoriesAsync();
+        Task<List<CategoryIdNameDto>> GetChildCategoriesByParentIdAsync(string parentCategoryId);
 
         Task<SingleCategoryDto> GetDetailedCategoryByIdAsync(string categoryId);
         Task<CategoryIdNameDto> GetCategoryIdNameByIdAsync(string categoryId);

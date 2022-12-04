@@ -31,6 +31,21 @@ namespace ECommerceAPI.Persistence.Services.Product
             _categoryService = categoryService;
         }
 
+
+
+        public async Task<SingleProductDto> GetProductByIdAsync(string productId)
+        {
+            var product = await _productReadRepository.GetByIdAsync(Guid.Parse(productId));
+            var productCategory = await _categoryService.GetCategoryIdNameByIdAsync(product.CategoryId.ToString());
+            return new()
+            {
+                Id = product.Id.ToString(),
+                Stock = product.Stock,
+                Price = product.Price,
+                Name = product.Name,
+                Category = productCategory,
+            };
+        }
         public async Task<PagedProductsDto> GetAllProductsPagedAsync(int page, int size)
         {
             return new()
@@ -41,20 +56,15 @@ namespace ECommerceAPI.Persistence.Services.Product
                     Id = p.Id.ToString(),
                     Name = p.Name,
                     Stock = p.Stock,
-                    ProductImageFiles = p.ProductImageFiles,
                     Category = new CategoryIdNameDto
                     {
                         Id = p.Category.Id.ToString(),
                         Name = p.Category.Name
                     },
-                    CreatedDate = p.CreatedDate,
                     Price = p.Price,
-                    UpdatedDate = p.UpdatedDate
                 }).ToList()
             };
         }
-
-
         public async Task<bool> CreateProductAsync(CreateProductDto productDto)
         {
             await _productWriteRepository.AddAsync(new()
@@ -88,7 +98,7 @@ namespace ECommerceAPI.Persistence.Services.Product
             else
                 return false;
         }
-        public async Task<bool> UpdateProductAsync(UpdateProductDto productDto)
+        public async Task<bool> UpdateProductAsync(UpdateProductDto productDto) //TODO refactor this and repository update func
         {
             var productToUpdate = await _productReadRepository.GetByIdAsync(Guid.Parse(productDto.Id));
             productToUpdate.Name = productDto.Name;
@@ -145,21 +155,6 @@ namespace ECommerceAPI.Persistence.Services.Product
             return true;
         }
 
-        public async Task<SingleProductDto> GetProductByIdAsync(string productId)
-        {
-            var product = await _productReadRepository.GetByIdAsync(Guid.Parse(productId));
-            var productCategory = await _categoryService.GetCategoryIdNameByIdAsync(product.CategoryId.ToString());
-            return new()
-            {
-                Id = product.Id.ToString(),
-                Stock = product.Stock,
-                Price = product.Price,
-                Name = product.Name,
-                Category = productCategory,
-                CreatedDate = product.CreatedDate,
-                ProductImageFiles = product.ProductImageFiles,
-                UpdatedDate = product.UpdatedDate
-            };
-        }
+
     }
 }

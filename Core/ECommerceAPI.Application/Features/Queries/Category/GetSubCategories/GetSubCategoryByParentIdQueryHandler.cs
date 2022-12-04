@@ -14,7 +14,7 @@ namespace ECommerceAPI.Application.Features.Queries.Category.GetSubCategories
 
         public async Task<GetSubCategoryByParentIdQueryResponse> Handle(GetSubCategoryByParentIdQueryRequest request, CancellationToken cancellationToken)
         {
-            var childCategories = await _categoryService.GetSubCategoriesByParentIdAsync(request.ParentId);
+            var childCategories = await _categoryService.GetChildCategoriesByParentIdAsync(request.ParentId);
             return new GetSubCategoryByParentIdQueryResponse
             {
                 ChildCategories = childCategories,

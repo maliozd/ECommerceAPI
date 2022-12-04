@@ -72,7 +72,7 @@ namespace ECommerceAPI.Persistence.Services.Category
             return category;
         }
 
-        public async Task<List<CategoryIdNameDto>> GetMainCategoriesAsync()
+        public async Task<List<CategoryIdNameDto>> GetParentCategoriesAsync()
         {
             var mainCategories = await _categoryReadRepository.GetAll().Where(c => c.ParentCategoryId == null).Select(c => new CategoryIdNameDto
             {
@@ -82,7 +82,7 @@ namespace ECommerceAPI.Persistence.Services.Category
             return mainCategories;
         }
 
-        public async Task<List<CategoryIdNameDto>> GetSubCategoriesByParentIdAsync(string parentCategoryId)
+        public async Task<List<CategoryIdNameDto>> GetChildCategoriesByParentIdAsync(string parentCategoryId)
         {
             var subCategories = await _categoryReadRepository.GetAll().Where(c => c.ParentCategoryId == Guid.Parse(parentCategoryId)).Select(c => new CategoryIdNameDto
             {
