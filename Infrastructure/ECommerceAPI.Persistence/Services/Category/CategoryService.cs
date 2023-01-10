@@ -91,5 +91,10 @@ namespace ECommerceAPI.Persistence.Services.Category
             }).ToListAsync();
             return subCategories;
         }
+
+        //public async Task<CategoryIdNameDto> GetParentCategoryBySubCategoryIdAsync(string subCategoryId)
+        //{
+        //    var parentCategory = 
+        //}
     }
 }

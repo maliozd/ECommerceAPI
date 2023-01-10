@@ -6,7 +6,6 @@ namespace ECommerceAPI.Application.Abstraction.Services.Product
     public interface IProductService
     {
         Task<PagedProductsDto> GetAllProductsPagedAsync(int page, int size);
-
         Task<SingleProductDto> GetProductByIdAsync(string productId);
         Task<bool> CreateProductAsync(CreateProductDto productDto);
         Task<bool> UpdateProductAsync(UpdateProductDto productDto);

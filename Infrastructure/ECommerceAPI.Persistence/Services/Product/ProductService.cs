@@ -4,6 +4,7 @@ using ECommerceAPI.Application.Abstraction.Services.Product;
 using ECommerceAPI.Application.Abstraction.Storage;
 using ECommerceAPI.Application.Dtos.Category;
 using ECommerceAPI.Application.Dtos.Product;
+using ECommerceAPI.Application.Dtos.Product.ProductImage;
 using ECommerceAPI.Application.Repositories;
 using ECommerceAPI.Application.Repositories.ProductImageFileRepository;
 using ECommerceAPI.Domain.Entities.FileEntities;
@@ -18,10 +19,11 @@ namespace ECommerceAPI.Persistence.Services.Product
         readonly IProductReadRepository _productReadRepository;
         readonly IStorageService _storageService;
         readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
+        readonly IProductImageFileReadRepository _productImageFileReadRepository;
         readonly IProductHubService _productHubService;
         readonly ICategoryService _categoryService;
 
-        public ProductService(IProductWriteRepository productWriteRepository, IProductHubService productHubService, IProductReadRepository productReadRepository, IStorageService storageService, IProductImageFileWriteRepository productImageFileWriteRepository, ICategoryService categoryService)
+        public ProductService(IProductWriteRepository productWriteRepository, IProductHubService productHubService, IProductReadRepository productReadRepository, IStorageService storageService, IProductImageFileWriteRepository productImageFileWriteRepository, ICategoryService categoryService, IProductImageFileReadRepository productImageFileReadRepository)
         {
             _productWriteRepository = productWriteRepository;
             _productHubService = productHubService;
@@ -29,9 +31,8 @@ namespace ECommerceAPI.Persistence.Services.Product
             _storageService = storageService;
             _productImageFileWriteRepository = productImageFileWriteRepository;
             _categoryService = categoryService;
+            _productImageFileReadRepository = productImageFileReadRepository;
         }
-
-
 
         public async Task<SingleProductDto> GetProductByIdAsync(string productId)
         {
@@ -51,16 +52,18 @@ namespace ECommerceAPI.Persistence.Services.Product
             return new()
             {
                 TotalCount = _productReadRepository.GetAll().Count(),
-                Products = _productReadRepository.GetAll().Include(x => x.ProductImageFiles).Include(x => x.Category).Skip(page * size).Take(size).Select(p => new SingleProductDto
+                Products = _productReadRepository.GetAll().Include(x => x.Category).Skip(page * size).Take(size).Select(p => new SingleProductDto
                 {
                     Id = p.Id.ToString(),
                     Name = p.Name,
                     Stock = p.Stock,
+                    CreatedDate = p.CreatedDate,
                     Category = new CategoryIdNameDto
                     {
                         Id = p.Category.Id.ToString(),
                         Name = p.Category.Name
                     },
+                    ProductImage = p.ProductImageFiles.Where(x => x.Showcase == true).Select(pi => new ProductImageDto { Id = pi.Id.ToString(), FileName = pi.FileName, Showcase = pi.Showcase, Path = pi.Path, }).FirstOrDefault(),
                     Price = p.Price,
                 }).ToList()
             };
@@ -139,7 +142,6 @@ namespace ECommerceAPI.Persistence.Services.Product
             else
                 return false;
         }
-
         public async Task<bool> ChangeProductImageShowcaseImageAsync(string productId, string imageId)
         {
             var product = await _productReadRepository.Table.Include(x => x.ProductImageFiles).FirstOrDefaultAsync(x => x.Id == Guid.Parse(productId));

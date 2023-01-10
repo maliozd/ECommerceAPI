@@ -43,6 +43,12 @@ namespace ECommerceAPI.API.Controllers
             return Ok(response);
         }
 
+        //[HttpGet("[action]/{SubCategoryId}")]
+        //public async Task<IActionResult> GetMainCategoryBySubCategoryId([FromRoute] Get)
+        //{
+
+        //}
+
         [HttpGet("{CategoryId}")]
         public async Task<IActionResult> GetById([FromRoute] GetCategoryByIdQueryRequest getCategoryByIdQueryRequest)
         {
