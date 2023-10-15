@@ -22,7 +22,6 @@ namespace ECommerceAPI.Application.Features.Queries.Category.GetAllCategories
                 TotalCount = categoryData.TotalCount,
                 Categories = categoryData.Categories.OrderByDescending(c => c.IsParentCategory).ToList()
             };
-
         }
     }
 }

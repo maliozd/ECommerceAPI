@@ -5,23 +5,17 @@ using ECommerceAPI.Infrastructure.Filters;
 using ECommerceAPI.Infrastructure.Services.Storage.Azure;
 using ECommerceAPI.Persistence;
 using ECommerceAPI.SignalR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Server.IISIntegration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Context;
 using Serilog.Core;
 using Serilog.Sinks.MSSqlServer;
-using System.Security.Claims;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddHttpContextAccessor(); //clientten gelen HttpContext nesneine katmanlar tarafýndan eriþilmemizi saðlayacak
-builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddAuthentication(IISDefaults.AuthenticationScheme);
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfrastructureServices();
@@ -29,28 +23,11 @@ builder.Services.AddInfrastructureServices();
 builder.Services.AddStorage<AzureStorage>();
 builder.Services.AddApplicationServices();
 builder.Services.AddSignalRServices();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer("Admin", options =>
-    {
-        options.TokenValidationParameters = new()
-        {
-            ValidateAudience = true, //Olusturulacak token deðerini kimlerin/hangi originlerin/sitelerin kullanacaðýný belirlediðimiz deðer. -> www.random.com
-            ValidateIssuer = true, //Olusturulacak token deðerini kimin daðýttýðýný ifade edeceðimiz alan. -> www.myapi.com -> bu proje
-            ValidateLifetime = true, //Olusturulan token deðerinin süresini kontrol edecek olan doðrulama
-            ValidateIssuerSigningKey = true, //Üretilecek token deðerinin uygulamamýza ait bir deðer olduðunu ifade eden security key verisinin doðrulanmasý.--> simetrik key -- uygulamaya özel unique key
+
+builder.Services.AddConfiguredJWTAuthentication(builder.Configuration);
 
 
-            ValidAudience = builder.Configuration["Token:Audience"],
-            ValidIssuer = builder.Configuration["Token:Issuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"])),//byte
-            LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false, //lifetameValidator delegatedir. deðiþkenler temsili
-            NameClaimType = ClaimTypes.Name
-
-        };
-    });
-
-
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200", "https://localhost:4200", "https://localhost:52551", "http://localhost:52551").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
 
 builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>()).AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 //builder.Services.AddControllers();
@@ -64,18 +41,7 @@ builder.Services.AddHttpLogging(logging =>
     logging.ResponseBodyLogLimit = 4096;
 
 });
-//SqlColumn sqlColumn = new SqlColumn();
-//sqlColumn.ColumnName = "UserName";
-//sqlColumn.DataType = System.Data.SqlDbType.NVarChar;
-//sqlColumn.PropertyName = "UserName";
-//sqlColumn.DataLength = 50;
-//sqlColumn.AllowNull = true;
-//ColumnOptions columnOpt = new ColumnOptions();
-////columnOpt.Store.Remove(StandardColumn.Properties);
-//columnOpt.Store.Add(StandardColumn.LogEvent);
-//columnOpt.AdditionalColumns = new Collection<SqlColumn> { sqlColumn };
 
-//var output = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] {Message} {ActionName} {UserName} {NewLine}{Exception}";
 Logger logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("logs/log.txt")
@@ -94,7 +60,33 @@ Logger logger = new LoggerConfiguration()
 builder.Host.UseSerilog(logger);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "ECommerce API", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 
 var app = builder.Build();
 

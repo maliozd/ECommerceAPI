@@ -17,16 +17,11 @@ namespace ECommerceAPI.Persistence.Repositories
         public async Task<bool> AddAsync(T entity)
         {
             EntityEntry<T> entityEntry = await Table.AddAsync(entity);
-
             return entityEntry.State == EntityState.Added;
         }
         public async Task<bool> AddRangeAsync(List<T> entity)
         {
-            //foreach (T entry in entity)
-            //{
-            //    EntityEntry<T> entityEntry = await Table.AddAsync(entry);
-            //    entityEntry.State = EntityState.Added;
-            //}
+
             await Table.AddRangeAsync(entity);
             return true;
         }

@@ -11,55 +11,62 @@ namespace ECommerceAPI.Infrastructure.Services.Configurations
 {
     public class ApplicationService : IApplicationService
     {
-        public List<Menu> GetAuthorizeDefinitionEndpoint(Type type)
+        /// <summary>
+        /// /// 
+        /// </summary>
+        /// <param name="type">
+        /// incoming type -> typeof(Program)
+        /// </param>
+        /// <returns></returns>
+        public List<Menu> GetAuthorizeDefinitionEndpoints(Type type)
         {
-            Assembly assembly = Assembly.GetAssembly(type);
-            var controllers = assembly.GetTypes().Where(t => t.IsAssignableTo(typeof(ControllerBase)));
-            List<Menu> menus = new();
-            if (controllers != null)
+            Assembly? assembly = Assembly.GetAssembly(type);
+            var controllers = assembly?.GetTypes().Where(t => t.IsAssignableTo(typeof(ControllerBase)));
+            List<Menu> definitionEndpointsMenu = new();
+
+            foreach (Type controller in controllers)
             {
-                foreach (var controller in controllers)
+                var actionsMethodInfos = controller.GetMethods().Where(m => m.IsDefined(typeof(AuthorizeDefinitionAttribute)));
+                if (actionsMethodInfos != null)
                 {
-                    var actions = controller.GetMethods().Where(m => m.IsDefined(typeof(AuthorizeDefinitionAttribute)));
-
-                    if (actions != null)
+                    foreach (MethodInfo action in actionsMethodInfos)
                     {
-                        foreach (var action in actions)
-                        {
-                            var attributes = action.GetCustomAttributes(true);
-                            if (attributes != null)
-                            {
-                                Menu menu = new();
-                                var authorizeDefAttribute = attributes.FirstOrDefault(a => a.GetType() == typeof(AuthorizeDefinitionAttribute)) as AuthorizeDefinitionAttribute;
-                                if (!menus.Any(m => m.MenuName == authorizeDefAttribute.Menu))
-                                {
-                                    menu = new() { MenuName = authorizeDefAttribute.Menu };
-                                    menus.Add(menu);
-                                }
-                                else
-                                    menu = menus.FirstOrDefault(m => m.MenuName == authorizeDefAttribute.Menu);
-
-                                Application.Dtos.Configuration.Action _action = new()
-                                {
-                                    ActionType = Enum.GetName(typeof(ActionType),authorizeDefAttribute.ActionType),
-                                    Definition = authorizeDefAttribute.Definiton,
-                                };
-
-                                var httpAttribute = attributes.FirstOrDefault(a => a.GetType().IsAssignableTo(typeof(HttpMethodAttribute))) as HttpMethodAttribute;
-                                if (httpAttribute != null)
-                                    _action.HttpType = httpAttribute.HttpMethods.First();
-                                else
-                                    _action.HttpType = HttpMethods.Get;
-
-                                _action.UniqueCode = $"{_action.HttpType}-{_action.ActionType}-{_action.Definition}";
-                                menu.Actions.Add(_action);
-                            }
-                        }
+                        var attributes = action.GetCustomAttributes(true);
+                        if (attributes != null)
+                            AddActionsToEndpointsMenu(attributes, definitionEndpointsMenu);
                     }
                 }
-
             }
-            return menus;
+            return definitionEndpointsMenu;
+        }
+        private void AddActionsToEndpointsMenu(object[] attributes, List<Menu> definitionEndpointsMenu)
+        {
+            Menu menu = new();
+            var authorizeDefAttribute = attributes.FirstOrDefault(a => a.GetType() == typeof(AuthorizeDefinitionAttribute)) as AuthorizeDefinitionAttribute;
+
+            if (!definitionEndpointsMenu.Any(m => m.MenuName == authorizeDefAttribute.Menu))
+            {
+                menu = new() { MenuName = authorizeDefAttribute.Menu };
+                definitionEndpointsMenu.Add(menu);
+            }
+            else
+                menu = definitionEndpointsMenu.FirstOrDefault(m => m.MenuName == authorizeDefAttribute.Menu);
+
+            Application.Dtos.Configuration.Action customAction = new()
+            {
+                ActionType = Enum.GetName(typeof(ActionType), authorizeDefAttribute.ActionType),
+                Definition = authorizeDefAttribute.Definition,
+            };
+
+            HttpMethodAttribute? httpAttribute = attributes.FirstOrDefault(a => a.GetType().IsAssignableTo(typeof(HttpMethodAttribute))) as HttpMethodAttribute;
+
+            if (httpAttribute != null)
+                customAction.HttpType = httpAttribute.HttpMethods.First();
+            else
+                customAction.HttpType = HttpMethods.Get;
+
+            customAction.UniqueCode = $"{customAction.HttpType}-{customAction.ActionType}-{customAction.Definition}";
+            menu.Actions.Add(customAction);
         }
     }
 }

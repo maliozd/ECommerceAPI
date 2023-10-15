@@ -7,6 +7,7 @@ using ECommerceAPI.Application.Abstraction.Services.Basket;
 using ECommerceAPI.Application.Abstraction.Services.Category;
 using ECommerceAPI.Application.Abstraction.Services.Order;
 using ECommerceAPI.Application.Abstraction.Services.Product;
+using ECommerceAPI.Application.Abstraction.Services.Role;
 using ECommerceAPI.Application.Abstraction.Services.User;
 using ECommerceAPI.Application.Repositories;
 using ECommerceAPI.Application.Repositories.CustomerRepository;
@@ -47,9 +48,10 @@ namespace ECommerceAPI.Persistence
             }).AddEntityFrameworkStores<APIDbContext>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IRoleService, RoleService>();
             #endregion
 
-            #region 
+            #region Repos
 
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
             _ = services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();

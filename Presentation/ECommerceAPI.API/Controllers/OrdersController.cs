@@ -4,12 +4,10 @@ using ECommerceAPI.Application.Enums;
 using ECommerceAPI.Application.Features.Commands.Order.CompleteOrder;
 using ECommerceAPI.Application.Features.Commands.Order.CreateOrder;
 using ECommerceAPI.Application.Features.Commands.Order.DeleteOrder;
-using ECommerceAPI.Application.Features.Commands.Product.DeleteProduct;
 using ECommerceAPI.Application.Features.Queries.Order;
 using ECommerceAPI.Application.Features.Queries.Order.GetByIdOrder;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceAPI.API.Controllers
@@ -28,7 +26,7 @@ namespace ECommerceAPI.API.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Admin")] //status code 401 --> unauthorized
-        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Orders, ActionType = ActionType.Post,Definiton = "CreateOrder")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Orders, ActionType = ActionType.Post, Definition = "CreateOrder")]
         public async Task<IActionResult> CreateOrder(CreateOrderCommandRequest request)
         {
             var response = await _mediator.Send(request);
@@ -36,7 +34,7 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpGet]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Orders, ActionType = ActionType.Get, Definiton = "GetAllOrders")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Orders, ActionType = ActionType.Get, Definition = "GetAllOrders")]
 
         public async Task<IActionResult> GetAllOrders([FromQuery] GetAllOrdersQueryRequest request)
         {
@@ -45,7 +43,7 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpGet("{Id}")]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Orders, ActionType = ActionType.Get, Definiton = "GetOrderById")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Orders, ActionType = ActionType.Get, Definition = "GetOrderById")]
 
         public async Task<IActionResult> GetOrderById([FromRoute] GetByIdOrderQueryRequest request)
         {
@@ -54,7 +52,7 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpDelete("{Id}")]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Orders, ActionType = ActionType.Delete, Definiton = "DeleteOrder")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Orders, ActionType = ActionType.Delete, Definition = "DeleteOrder")]
 
         public async Task<IActionResult> DeleteOrder([FromRoute] DeleteOrderByIdCommandRequest request)
         {
@@ -63,7 +61,7 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpGet("complete-order/{Id}")]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Orders, ActionType = ActionType.Update, Definiton = "CompleteOrder")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Orders, ActionType = ActionType.Update, Definition = "CompleteOrder")]
 
         public async Task<IActionResult> CompleteOrder([FromRoute] CompleteOrderCommandRequest request)
         {

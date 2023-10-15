@@ -49,7 +49,7 @@ namespace ECommerceAPI.API.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Admin")]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Post, Definiton = "CreateProduct")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Post, Definition = "CreateProduct")]
         public async Task<IActionResult> CreateProduct(CreateProductCommandRequest createProductCommandRequest)
         {
 
@@ -60,7 +60,7 @@ namespace ECommerceAPI.API.Controllers
 
         [HttpPut]
         //[Authorize(AuthenticationSchemes = "Admin")]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Update, Definiton = "UpdateProduct")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Update, Definition = "UpdateProduct")]
         public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductCommandRequest updateProductCommandRequest) //sent updateRequest with body from client
         {
             var response = await _mediator.Send(updateProductCommandRequest);
@@ -68,7 +68,7 @@ namespace ECommerceAPI.API.Controllers
         }
         [HttpDelete("{Id}")]
         [Authorize(AuthenticationSchemes = "Admin")]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Delete, Definiton = "DeleteProduct")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Delete, Definition = "DeleteProduct")]
         public async Task<IActionResult> DeleteProduct([FromRoute] DeleteByIdProductCommandRequest deleteByIdProductCommandRequest)
         {
             var response = await _mediator.Send(deleteByIdProductCommandRequest);
@@ -77,7 +77,7 @@ namespace ECommerceAPI.API.Controllers
 
         [HttpPost("[action]")]  //http//../api/controller/action
         [Authorize(AuthenticationSchemes = "Admin")]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Post, Definiton = "UploadProductImage")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Post, Definition = "UploadProductImage")]
         public async Task<IActionResult> Upload([FromQuery] UploadProductImageCommandRequest uploadProductImageCommandRequest)
         {
             uploadProductImageCommandRequest.Files = Request.Form.Files;
@@ -87,7 +87,7 @@ namespace ECommerceAPI.API.Controllers
 
         [HttpGet("[action]/{Id}")] //alınacak parametre burdaki gibi routeda belirtilmiyorsa, parametre query stringten gelecektir.
         [Authorize(AuthenticationSchemes = "Admin")]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Get, Definiton = "GetProductImages")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Get, Definition = "GetProductImages")]
         public async Task<IActionResult> GetProductImages([FromRoute] GetByIdProductImageFileQueryRequest getByIdProductImageFileQueryRequest)
         {
             var response = await _mediator.Send(getByIdProductImageFileQueryRequest);
@@ -95,7 +95,7 @@ namespace ECommerceAPI.API.Controllers
         }
         [HttpDelete("[action]/{Id}")] //imageId queryStringden, productId routedan gelecek.
         [Authorize(AuthenticationSchemes = "Admin")]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Delete, Definiton = "DeleteProductImage")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Delete, Definition = "DeleteProductImage")]
         public async Task<IActionResult> DeleteProductImage([FromRoute] DeleteProductImageCommandRequest deleteProductImageCommandRequest, [FromQuery] string imageId)
         {
             deleteProductImageCommandRequest.ImageId = imageId;
@@ -104,7 +104,7 @@ namespace ECommerceAPI.API.Controllers
         }
         [HttpPut("[action]")]
         [Authorize(AuthenticationSchemes = "Admin")]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Update, Definiton = "ChangeProductImageShowcase")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitonConstants.Products, ActionType = ActionType.Update, Definition = "ChangeProductImageShowcase")]
 
         public async Task<IActionResult> ChangeProductImageShowcase([FromBody] ChangeShowcaseImageCommandRequest changeShowcaseImageCommandRequest)
         {

@@ -30,7 +30,7 @@ namespace ECommerceAPI.Persistence.Services.Category
                 Name = c.Name,
                 ChildCategories = c.ChildCategories.Select(ch => ch.Name).ToList(),
                 ParentCategory = c.ParentCategory.Name,
-                IsParentCategory = c.ParentCategory == null ? true : false
+                IsParentCategory = c.ParentCategory == null
             }).ToListAsync();
 
             return new()
