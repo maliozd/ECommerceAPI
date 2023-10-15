@@ -1,5 +1,3 @@
-E-Commerce API application with .NET
-
 • ASP.NET Core 6
 
 • Onion Architecture
