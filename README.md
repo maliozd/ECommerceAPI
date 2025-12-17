@@ -1,29 +1,51 @@
-• ASP.NET Core 6
+## 📦 E-Commerce API – Learning Oriented Backend Project
 
-• Onion Architecture
+This project is an **E-Commerce Backend API** developed with **ASP.NET Core 6**, focusing on **modern backend architecture, security, and scalability concepts**.
 
-• Code First
+The project was built as a **learning-driven journey**, progressing step-by-step under the guidance of **Gençay Yıldız**, with the primary goal of deeply understanding real-world backend patterns rather than delivering a minimal MVP.
 
-• EF Core 6
+## 🎯 Project Goal
 
-• Fluent Validation & ValidationFilter
+The main purpose of this project was to:
 
-• CQRS Mediator Pattern & MediatR 
+- Learn and apply **enterprise-level backend architecture**
+- Understand authentication & authorization flows
+- Explore real-world API concerns such as validation, logging, error handling, and security
+- Gain hands-on experience with **CQRS**, **Onion Architecture**, and **SignalR**
+- Progress through **trial, error, and refactoring**, rather than blindly following a template
 
-• ASP.NET Core Identity
+This is intentionally **not a tutorial copy-paste project**, but an evolving codebase shaped through experimentation and iteration.
 
-• JWT Token & Refresh Token
+## 🧱 Architecture
 
-• Authentication & Authorization
+The project follows **Onion Architecture**, ensuring:
 
-• Social Login - Google
+- Clear separation of concerns
+- Dependency inversion
+- Testability and maintainability
+- Infrastructure isolation
 
-• Http Interceptor Global Http Error Handler
 
-• Serilog 
+## 🛠️ Technologies & Concepts Used
 
-• Global Exception Handler
+- **ASP.NET Core 6**
+- **Onion Architecture**
+- **Code First**
+- **Entity Framework Core 6**
+- **FluentValidation & ValidationFilter**
+- **CQRS Mediator Pattern (MediatR)**
+- **ASP.NET Core Identity**
+- **JWT Token & Refresh Token**
+- **Authentication & Authorization**
+- **Social Login (Google)**
+- **HTTP Interceptor & Global HTTP Error Handling**
+- **Serilog (Structured Logging)**
+- **Global Exception Handling**
+- **Azure Blob Storage**
+- **SignalR (Real-Time Communication)**
 
-• Azure Blob Storage
 
-• SignalR
+## 📌 Disclaimer
+
+This project is a **learning and exploration project** developed alongside educational content by **Gençay Yıldız**.
+While many components are production-ready in isolation, the overall architecture reflects an **educational mindset**, prioritizing understanding and experimentation over delivery speed.
